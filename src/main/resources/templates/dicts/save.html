@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common/head::common-head}"/>
+
+<style type="text/css">
+  #dict_val_table_btody .form-group{
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+  }
+</style>
+
+<body class="hold-transition skin-blue fixed sidebar-mini">
+<div class="wrapper">
+  <header th:replace="~{common/top::common-top}"/>
+
+  <aside th:replace="~{common/left::common-left}"/>
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1 th:text="${#strings.isEmpty(id) ? '添加字典':'编辑字典'}"></h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+        <li><a href="#">字典管理</a></li>
+        <li class="active">列表</li>
+      </ol>
+    </section>
+  
+      <!-- Main content -->
+      <section class="content">
+        <div class="row">
+        <!-- right column -->
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <!-- form start -->
+            <form id="dict" class="form-horizontal" th:action="@{/dicts/}+${#strings.isEmpty(dict.id)?'':dict.id}" th:object="${dict}" th:method="post">
+            
+              <input type="hidden" name="id" th:value="*{id}">
+              <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+              
+              <div class="box-body">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">名称</label>
+                    <div class="col-sm-10">
+                      <input name="name" id="name" th:value="*{name}" class="form-control" placeholder="名称" data-bv-notempty="true"/>
+                    </div>
+                  </div>
+  	  
+                  <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">类型</label>
+                    <div class="col-sm-10">
+                      <input name="type" id="type" th:value="*{type}"  class="form-control" placeholder="类型" data-bv-notempty="true"/>
+                    </div>
+                  </div>
+                </div>
+  	  
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="note" class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                      <input name="note" id="note" th:value="*{note}" class="form-control" placeholder="备注" />
+                    </div>
+                  </div>
+                </div>
+  	  
+                <div class="col-md-12">   
+                  <div class="col-md-6 ">
+                    <div class="form-group">
+                      <button type="button" id="add_dict_val" class="btn btn-success btn-flat">添加明细</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-8">   
+                  <table id="dict_val_table" data-toggle="table">
+                    <thead>
+                      <tr>
+                        <th>名 字</th>
+                        <th>值 </th>
+                        <th>操 作 </th>
+                      </tr>
+                    </thead>
+                    <tbody id="dict_val_table_btody">
+
+                      <tr th:if="${#lists.isEmpty(dictVals)}">
+                        <td><div class="form-group"><input type="text" name="dictValName"  class="form-control" placeholder="名字" data-bv-notempty="true"/></div></td>
+                        <td><div class="form-group"><input type="text" name="dictValValue"  class="form-control" placeholder="值" data-bv-notempty="true"/></div></td>
+                        <td><button type="button" id="delete_dict_val" class="btn btn-danger btn-flat">删除</button></td>
+                      </tr>
+
+                      <tr th:each="dictVal : ${dictVals}">
+                        <td><div class="form-group"><input type="text" name="dictValName" th:value="${dictVal.name}" class="form-control" placeholder="名字" data-bv-notempty="true"/></div></td>
+                        <td><div class="form-group"><input type="text" name="dictValValue" th:value="${dictVal.value}"  class="form-control" placeholder="值" data-bv-notempty="true"/></div></td>
+                        <td><button type="button" id="delete_dict_val" class="btn btn-danger btn-flat" >删除</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '保 存':'更 新'}"></button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
+      </div>
+        <!-- /.row -->
+      </section>
+      <!-- /.content -->
+    </div>
+
+    <footer th:replace="~{common/footer::common-footer}"/>
+
+    <aside th:replace="~{common/setting::common-setting}"/>
+
+  <script th:src="@{/static/bower_components/table/bootstrap-table.js}"></script>
+  <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+
+  <script th:src="@{/static/dist/plugins/validate/js/bootstrapValidator.min.js}"></script>
+  <script th:src="@{/static/dist/plugins/validate/js/language/zh_CN.js}"></script>
+  <link rel="stylesheet" th:href="@{/dist/plugins/validate/css/bootstrapValidator.min.css}">
+</div>
+  
+  <script type="text/javascript">
+    $(function(){
+     $("form[id='dict']").bootstrapValidator({
+      	  feedbackIcons: {
+      		  valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            }
+        }).on("success.form.bv",function(e){
+        	var $form = $(this);
+            var $trs = $("table > tbody[id='dict_val_table_btody'] > tr");
+       	    $.each($trs,function(index,value){
+       	   	    $(value).find("input[name='dictValName']").prop("name","dictVals["+index+"].name");
+       	   	    $(value).find("input[name='dictValValue']").prop("name","dictVals["+index+"].value");
+       	    });
+        });
+        
+        //监听添加明细
+        $("#add_dict_val").on("click",function(){
+      	    //复制一行
+      	    var $tbody = $("table > tbody[id='dict_val_table_btody']");
+      	    
+      	    var $firtTr = $tbody.children(":eq(0)");
+      	    var $colneTr = $firtTr.clone(); 
+      	    //清除数据
+      	    
+      	    var $id = $colneTr.find("input[name='id']");  //伪数组
+      	    if($id.length==1){
+      	  	  $id.val("");
+      	    }
+      	     
+      	    $colneTr.find("input[name='dictValName']").val("");
+      	    $colneTr.find("input[name='dictValValue']").val("");
+      	    $tbody.append($colneTr);
+        })
+        
+        //监听删除
+       $("table > tbody[id='dict_val_table_btody']").on("click","button[id='delete_dict_val']",function(){
+       	  var size = $("table > tbody[id='dict_val_table_btody'] > tr").length;
+      	  if(size>1){
+      	       $(this).closest("tr").remove();
+      	  }
+       });
+    });
+  </script>
+  
+</body>
+</html>
+ 
+ 

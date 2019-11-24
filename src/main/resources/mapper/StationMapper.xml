@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.StationMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Station" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="icon" property="icon" jdbcType="VARCHAR" />
+      <result column="managerId" property="managerId" jdbcType="INTEGER" />
+      <result column="position" property="position" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      icon,
+      managerId,
+      position
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from station where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.StationQuery">
+      select <include refid="Base_Column_List" /> from station
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords,jdbcType=VARCHAR}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from station where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from station where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Station" >
+    insert into station
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        id,
+        name,
+        icon,
+        managerId,
+        <if test="position != null and position != ''" >
+            position
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=INTEGER},
+        #{name,jdbcType=VARCHAR},
+        #{icon,jdbcType=VARCHAR},
+        #{managerId,jdbcType=INTEGER},
+        <if test="position != null and position != ''" >
+            #{position,jdbcType=VARCHAR}
+        </if>
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Station" >
+      update station
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="icon != null and icon != ''" >
+              icon = #{icon,jdbcType=VARCHAR},
+          </if>
+          <if test="managerId != null" >
+              managerId = #{managerId,jdbcType=INTEGER},
+          </if>
+          <if test="position != null and position != ''" >
+              position = #{position,jdbcType=VARCHAR}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>

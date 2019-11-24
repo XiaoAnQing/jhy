@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.BookMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Book" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="customerNum" property="customerNum" jdbcType="VARCHAR" />
+      <result column="num" property="num" jdbcType="VARCHAR" />
+      <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
+      <result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
+      <result column="price" property="price" jdbcType="DECIMAL" />
+      <result column="customerId" property="customerId" jdbcType="INTEGER" />
+      <result column="lineId" property="lineId" jdbcType="INTEGER" />
+      <result column="userId" property="userId" jdbcType="INTEGER" />
+      <result column="bonus" property="bonus" jdbcType="DECIMAL" />
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+      <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      customerNum,
+      num,
+      createDate,
+      endDate,
+      price,
+      customerId,
+      lineId,
+      userId,
+      bonus,
+      remark,
+      status
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from book where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.BookQuery">
+      select <include refid="Base_Column_List" /> from book
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords,jdbcType=VARCHAR}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from book where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from book where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Book" >
+    insert into book
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        id,
+        customerNum,
+        num,
+        createDate,
+        endDate,
+        price,
+        customerId,
+        lineId,
+        userId,
+        <if test="bonus != null" >
+            bonus,
+        </if>
+        <if test="remark != null and remark != ''" >
+            remark,
+        </if>
+        status
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=INTEGER},
+        #{customerNum,jdbcType=VARCHAR},
+        #{num,jdbcType=VARCHAR},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{endDate,jdbcType=TIMESTAMP},
+        #{price,jdbcType=DECIMAL},
+        #{customerId,jdbcType=INTEGER},
+        #{lineId,jdbcType=INTEGER},
+        #{userId,jdbcType=INTEGER},
+        <if test="bonus != null" >
+            #{bonus,jdbcType=DECIMAL},
+        </if>
+        <if test="remark != null and remark != ''" >
+            #{remark,jdbcType=VARCHAR},
+        </if>
+        #{status,jdbcType=TINYINT}
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Book" >
+      update book
+      <set>
+          <if test="customerNum != null and customerNum != ''" >
+              customerNum = #{customerNum,jdbcType=VARCHAR},
+          </if>
+          <if test="num != null and num != ''" >
+              num = #{num,jdbcType=VARCHAR},
+          </if>
+          <if test="createDate != null" >
+              createDate = #{createDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="endDate != null" >
+              endDate = #{endDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="price != null" >
+              price = #{price,jdbcType=DECIMAL},
+          </if>
+          <if test="customerId != null" >
+              customerId = #{customerId,jdbcType=INTEGER},
+          </if>
+          <if test="lineId != null" >
+              lineId = #{lineId,jdbcType=INTEGER},
+          </if>
+          <if test="userId != null" >
+              userId = #{userId,jdbcType=INTEGER},
+          </if>
+          <if test="bonus != null" >
+              bonus = #{bonus,jdbcType=DECIMAL},
+          </if>
+          <if test="remark != null and remark != ''" >
+              remark = #{remark,jdbcType=VARCHAR},
+          </if>
+          <if test="status != null" >
+              status = #{status,jdbcType=TINYINT}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>

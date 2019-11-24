@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="~{common/head::common-head}"/>
+  
+  <body class="hold-transition skin-blue fixed sidebar-mini">
+    <div class="wrapper">
+      <header th:replace="~{common/top::common-top}"/>
+    
+      <aside th:replace="~{common/left::common-left}"/>
+    
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h1 th:text="${#strings.isEmpty(id) ? '添加订单明细':'编辑订单明细'}"></h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+            <li><a href="#">订单明细管理</a></li>
+            <li class="active">列表</li>
+          </ol>
+        </section>
+        
+        <!-- Main content -->
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- right column -->
+            <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                <!-- form start -->
+                <form class="form-horizontal" th:action="@{/bookItems/}+${#strings.isEmpty(bookItem.id)?'':bookItem.id}" th:method="post" th:object="${bookItem}">
+                  <input type="hidden" name="id" th:value="*{id}">
+                  <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+    
+                  <div class="box-body">   
+                  
+  	  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="bookNum" class="col-sm-2 control-label">订单</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="bookNum" name="bookNum" th:value="*{bookNum}" class="form-control" placeholder="订单" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="name" name="name" th:value="*{name}"  class="form-control" placeholder="名称" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+                    </div>
+  	  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="img" class="col-sm-2 control-label">图片</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="img" name="img" th:value="*{img}" class="form-control" placeholder="图片" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">单价</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="price" name="price" th:value="*{price}"  class="form-control" placeholder="单价" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+                    </div>
+  	  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="totalPrice" class="col-sm-2 control-label">总价</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="totalPrice" name="totalPrice" th:value="*{totalPrice}" class="form-control" placeholder="总价" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="totalCount" class="col-sm-2 control-label">数量</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="totalCount" name="totalCount" th:value="*{totalCount}"  class="form-control" placeholder="数量" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+                    </div>
+  	  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="endDate" class="col-sm-2 control-label">出货日期</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="endDate" name="endDate" th:value="*{endDate}" class="form-control" placeholder="出货日期" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="productId" class="col-sm-2 control-label">产品</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="productId" name="productId" th:value="*{productId}"  class="form-control" placeholder="产品" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+                    </div>
+  	  
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="status" class="col-sm-2 control-label">状态</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="status" name="status" th:value="*{status}" class="form-control" placeholder="状态" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="remark" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="remark" name="remark" th:value="*{remark}"  class="form-control" placeholder="备注" />
+                        </div>
+                      </div>
+                    </div>
+      
+     
+                  </div>
+                  <div class="box-footer">
+                    <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                    <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer th:replace="~{common/footer::common-footer}"/>
+    
+      <aside th:replace="~{common/setting::common-setting}"/>
+    </div>
+    
+    <script type="text/javascript">
+        $(function(){
+            $("form[id='bookItem']").bootstrapValidator({
+          	  feedbackIcons: {
+          		  valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                }
+            }); 
+        });
+    </script>
+  </body>
+</html>
+ 
+ 

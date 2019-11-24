@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <div th:replace="~{common/head::common-head}"/>
+    <script th:src="@{/static/bower_components/table/bootstrap-table.js}"></script>
+    <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
+    <script th:src="@{/static/dist/js/request.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+    <style type="text/css">
+      #order_item_table_body .form-group{
+        margin-right: 0px;
+        margin-left: 0px;
+        margin-bottom: 0px;
+      }
+    </style>
+    <title>添加订单</title>
+  </head>
+
+
+  
+  <body class="hold-transition skin-blue fixed sidebar-mini">
+    <div class="wrapper">
+      <header th:replace="~{common/top::common-top}"/>
+    
+      <aside th:replace="~{common/left::common-left}"/>
+    
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h1 th:text="${#strings.isEmpty(id) ? '添加订单':'编辑订单'}"></h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+            <li><a href="#">订单管理</a></li>
+            <li class="active">列表</li>
+          </ol>
+        </section>
+        
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- right column -->
+            <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                <!-- form start -->
+                <form class="form-horizontal" th:action="@{/books/}+${#strings.isEmpty(book.id)?'':book.id}" th:method="post" th:object="${book}" id="form_create_order">
+                  <input type="hidden" name="id" th:value="*{id}">
+                  <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+    
+                  <div class="box-body">
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="customerNum" class="col-sm-2 control-label">客户单号</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="customerNum" name="customerNum" th:value="*{customerNum}" class="form-control" placeholder="客户单号" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="endDate" class="col-sm-2 control-label">交货日期</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="endDate" name="endDate" th:value="*{endDate}"  class="form-control" placeholder="交货日期" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">总金额</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="price" name="price" th:value="*{price}" readonly="readonly"  class="form-control" placeholder="总金额" data-bv-notempty="true"/>
+                        </div>
+                      </div>
+  	  
+                      <div class="form-group">
+                        <label for="customerId" class="col-sm-2 control-label">客户</label>
+                        <div class="col-sm-10">
+                          <select class="form-control select2" style="width: 100%;" id="customerId" name="customerId" data-bv-notempty="true"></select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="lineId" class="col-sm-2 control-label">线路</label>
+                        <div class="col-sm-10">
+                          <select class="form-control select2" style="width: 100%;" id="lineId" name="lineId" data-bv-notempty="true"></select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="remark" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                          <input type="text" id="remark" name="remark" th:value="*{remark}"  class="form-control" placeholder="备注" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--添加订单明细-->
+                    <div class="col-md-12">
+                      <div class="col-md-6 ">
+                        <div class="form-group">
+                          <button type="button" id="add_order_item" class="btn btn-success btn-flat">添加明细</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <table id="order_item_table" data-toggle="table">
+                        <thead>
+                          <tr>
+                            <th>名称</th>
+                            <th>编号</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>总价</th>
+                            <th>操 作 </th>
+                          </tr>
+                        </thead>
+                        <tbody id="order_item_table_body">
+                          <tr>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" name="productName" readonly="readonly" class="form-control" placeholder="名称" data-bv-notempty="true"/>
+                                <input type="hidden" name="id"/>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" name="num" readonly="readonly" class="form-control" placeholder="编号" data-bv-notempty="true"/>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" name="productPrice" readonly="readonly"  class="form-control" placeholder="单价" data-bv-notempty="true"/>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" name="totalCount"  class="form-control" placeholder="数量" data-bv-notempty="true"/>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="text" name="productTotalPrice" readonly="readonly"  class="form-control" placeholder="总价" data-bv-notempty="true"/>
+                              </div>
+                            </td>
+                            <td><button type="button" id="delete_order_item" class="btn btn-danger btn-flat">删除</button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="box-footer">
+                    <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                    <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer th:replace="~{common/footer::common-footer}"/>
+    
+      <aside th:replace="~{common/setting::common-setting}"/>
+    </div>
+    
+    <script type="text/javascript">
+        var $medicineTable;
+        function calTotalPrice(){
+        	  var $itemTotalPriceInput = $("#order_item_table_body > tr input[name=productTotalPrice]");
+        	  var totalPrice=0;
+        	  $.each($itemTotalPriceInput,function(index,item){
+        		    if(parseFloat($(item).val())){
+        		         totalPrice = totalPrice+parseFloat($(item).val());
+        		    }
+        	  })
+        	  $("input[name=price]").val(totalPrice);
+        }
+
+        $(function(){
+
+            $("#customerId").select2({
+                placeholder:'请选择客户',//默认文字提示
+                tags: false,//允许手动添加
+                allowClear: true,//允许清空
+                ajax: {
+                    url: '[[@{/}]]customers',
+                    type:'get',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {name: params.term || ''};
+                    },
+                    processResults: function (data) {
+                        var array = new Array();
+                        data = data.data;
+                        if (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                array.push({id: data[i].id, text: data[i].name});
+                            }
+                        }
+                        var result = new Object();
+                        result.results = array;
+                        return result;
+                    }
+                }
+            });
+            $("#lineId").select2({
+                placeholder:'请选择线路',//默认文字提示
+                tags: false,//允许手动添加
+                allowClear: true,//允许清空
+                ajax: {
+                    url: '[[@{/}]]lines',
+                    type:'get',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {name: params.term || ''};
+                    },
+                    processResults: function (data) {
+                        var array = new Array();
+                        data = data.data;
+                        if (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                array.push({id: data[i].id, text: data[i].name});
+                            }
+                        }
+                        var result = new Object();
+                        result.results = array;
+                        return result;
+                    }
+                }
+            });
+
+        	  //监听数量的change事件
+        	  $("#order_item_table_body > tr:first input[name=totalCount]").on("change",function(){
+        		     var $it = $(this);
+        		     var $tr = $it.closest("tr");
+        		     if($tr.find("input[name=id]").val()){
+        			       var price = parseFloat($tr.find("input[name=productPrice]").val());
+        			       var $totalPriceInput = $tr.find("input[name=productTotalPrice]");
+        			       var count = parseInt($it.val());
+        			       if(count){
+	        		       	    if(count==0){
+	        		       	    	  $it.val(1);
+	        		       	    	  $totalPriceInput.val(price);
+	        		       	    	  //修改总价
+	        		       	    	  calTotalPrice();
+	        		       	    }else{
+		        	       	    	  if(price){
+		        	       	    		    $totalPriceInput.val(price*count);
+		        	       	    		    //修改总价
+		        	       	    		    calTotalPrice();
+		        	       	    	  }
+	        		       	    }
+        			       }else{
+        			       	    $it.val(1);
+        			       	    $totalPriceInput.val(price);
+        			       	    //修改总价
+        			       	    calTotalPrice();
+        			       }
+        		     }
+        	  });
+
+
+        	  $("#add_order_item").on("click",function(){
+
+        		    var $firstTr = $("#order_item_table_body > tr:first");
+        		    var $newTr = $firstTr.clone(true);//true:事件也复制
+        		    var $itemTableBody = $("#order_item_table_body");
+
+        		    //重置数据
+                $newTr.find("input[name=productName]").val("");
+                $newTr.find("input[name=num]").val("");
+                $newTr.find("input[name=productPrice]").val("");
+                $newTr.find("input[name=totalCount]").val("");
+                $newTr.find("input[name=productTotalPrice]").val("");
+                $newTr.find("input[name=id]").val("");
+        		    $newTr.appendTo($itemTableBody);
+        	  });
+        	  $("input[name=productName]").on("click",function(){
+        		    $("#modal_medicine").modal('show');
+            });
+        	  $("#delete_order_item").on("click",function(){
+        	  	  //如果是最后一个则不能删除
+        	      if($("#order_item_table_body >tr").length!=1){
+	          	      var $it = $(this);
+	          	      //var $tr = $it.parent().parent();
+	          	      var $tr = $it.closest("tr");
+	          	      $tr.remove();  //自己删除自己
+        	      }else{
+        	      	alert("不能删除最后一个");
+        	      }
+        	  });
+
+        	  //medicine_table 搜索
+            $("#searchForm").on("submit",function(){
+            	  //拼接请求参数
+            	  var queryType = $("#query_key").val();
+            	  var queryValue = $("#query_value").val();
+            	  //重新刷新table插件
+            	  var param = {};
+            	  param[queryType]=queryValue;
+                $medicineTable.bootstrapTable('refresh',{query:param});  //param是一个json对象
+            	  return false;//表单不要提交
+            });
+        	  //modal_medicine显示会触发该事件
+        	  $('#modal_medicine').on('show.bs.modal', function (e) {
+
+        		    //第一次的时候才需要加载名称信息
+        		    if($medicineTable==null){
+        		        var queryUrl = '[[@{/}]]/products';
+                    $medicineTable = $('#medicine_table').bootstrapTable({
+                        url: queryUrl,                      //请求后台的URL（*）
+                        method: 'GET',                      //请求方式（*）
+                        toolbar: '#medicineToolbar',                //工具按钮用哪个容器
+                        striped: true,                      //是否显示行间隔色
+                        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                        pagination: true,                   //是否显示分页（*）
+                        sortable: true,                     //是否启用排序
+                        sortOrder: "asc",                   //排序方式
+
+                        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+
+                        pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+                        pageSize: 10,                       //每页的记录行数（*）
+                        pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+
+                        clickToSelect: true,                //是否启用点击选中行
+                        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+
+                        //得到查询的参数
+                        queryParams : function (params) {
+                             var temp = {
+                                 pageNum: (params.offset / params.limit) + 1,   //页码
+                                 pageSize: params.limit                         //每页显示多条
+                             };
+                           return temp;
+                        },
+                        columns: [{
+                            checkbox: true,
+                            visible: true                  //是否显示复选框
+                        },{
+                            field: 'name',
+                            title: '名称'
+                        },{
+                            field: 'title',
+                            title: '简介'
+                        },{
+                            field: 'customerNum',
+                            title: '客户编号'
+                        },{
+                            field: 'num',
+                            title: '产品编号'
+                        },{
+                            field: 'oriPrice',
+                            title: '历史单价'
+                        },{
+                            field: 'price',
+                            title: '单价'
+                        },{
+                            field: 'splenicCuff',
+                            title: '脾套'
+                        },{
+                            field: 'glasses',
+                            title: '镜片'
+                        },{
+                            field: 'electroplatingColour',
+                            title: '电镀色'
+                        },{
+                            field: 'typeName',
+                            title: '材料'
+                        },{
+                            field: 'productTypeId',
+                            title: '商品类别'
+                        },{
+                            field: 'customerId',
+                            title: '客户'
+                        }],
+                        responseHandler: function (res) {
+                            return {
+                                "total": res.total,//总页数
+                                "rows": res.data   //数据
+                            };
+                        }
+                    });
+        		    }
+            });
+
+        	  //监听
+        	  $("#btn_batch_order").on("click",function(){
+        		    //获取table选中的
+        		    var medicines = $medicineTable.bootstrapTable('getAllSelections');
+                //关闭模态对话框
+               	$("#modal_medicine").modal('hide');
+        		    if(medicines.length==0){
+        			      return;
+        	    	}
+        		    $.each(medicines,function(index,item){
+        			      //判断之前存不存在
+        			      var $tempInput = $("#order_item_table_body > tr input[value='"+item.id+"']");
+        			      if($tempInput.length==1){
+        			      	  //存在的  只要修改数量
+        			      	  var $totalCountInput = $tempInput.closest("tr").find("input[name=totalCount]");
+        			      	  $totalCountInput.val(parseInt($totalCountInput.val())+1);
+        			      }else{
+
+        			          //添加到
+            	      	  var $firstTr = $("#order_item_table_body > tr:first");
+            	      	  var $newTr = $firstTr.clone(true);//true:事件也复制
+            	      	  var $itemTableBody = $("#order_item_table_body");
+            	      	  $newTr.appendTo($itemTableBody);
+
+            	      	  //填充数据
+            	      	  $newTr.find("input[name=productName]").val(item.name);
+            	      	  $newTr.find("input[name=num]").val(item.num);
+            	      	  $newTr.find("input[name=productPrice]").val(item.price);
+            	      	  $newTr.find("input[name=totalCount]").val("1");
+            	      	  $newTr.find("input[name=productTotalPrice]").val(item.price);
+            	      	  $newTr.find("input[name=id]").val(item.id);
+        			      }
+        		    });
+
+    			      //删掉无用行
+    		        var $trs =  $("#order_item_table_body > tr");
+    			      $.each($trs,function(index,item){
+    				        if(!$(item).find("input[name=id]").val()){
+    					          $(item).remove();
+    				        }
+    			      });
+        	  });
+
+        	  //监听表单提交事件
+        	  $("#form_create_order").on("submit",function(){
+        		    //修改请求参数名字
+        		    var $trs = $("#order_item_table_body > tr");
+        		    $.each($trs,function(index,item){
+        		    	  $(item).find("input[name=id]").attr("name","bookItems["+index+"].productId");
+        		    	  $(item).find("input[name=totalCount]").attr("name","bookItems["+index+"].totalCount");
+        		    });
+        		    return true;
+        	  });
+        });
+    </script>
+
+    <!-- 选择名称对话框 -->
+    <div id="modal_medicine" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myLargeModalLabel">请选择名称</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row ">
+              <form id="searchForm" action="" onsubmit="return false;">
+                <div class="col-xs-2">
+                   <select class="form-control" name="key" id="query_key">
+                     <option value="barcode">条码</option>
+                     <option value="name">名称</option>
+                   </select>
+                </div>
+                <div class="col-xs-2">
+                   <input type="text" id="query_value" name="value" class="form-control" placeholder="关键字">
+                </div>
+                <div class="col-xs-4">
+                   <button type="submit" class="btn bg-olive btn-flat">查询</button>
+                </div>
+              </form>
+            </div>
+            <div id="medicineToolbar">
+              <button id="btn_batch_order" type="button" class="btn bg-olive btn-flat">批量下单</button>
+            </div>
+            <table id="medicine_table"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

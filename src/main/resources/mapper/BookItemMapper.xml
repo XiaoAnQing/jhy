@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.BookItemMapper">
+
+  <resultMap id="BaseResultMap" type="bookItem" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="bookNum" property="bookNum" jdbcType="VARCHAR" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="img" property="img" jdbcType="VARCHAR" />
+      <result column="price" property="price" jdbcType="DECIMAL" />
+      <result column="totalPrice" property="totalPrice" jdbcType="DECIMAL" />
+      <result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+      <result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
+      <result column="productId" property="productId" jdbcType="INTEGER" />
+      <result column="status" property="status" jdbcType="TINYINT" />
+      <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      bookNum,
+      name,
+      img,
+      price,
+      totalPrice,
+      totalCount,
+      endDate,
+      productId,
+      status,
+      remark
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from bookItem where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.BookItemQuery">
+      select <include refid="Base_Column_List" /> from bookItem
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords,jdbcType=VARCHAR}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from bookItem where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from bookItem where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="bookItem" >
+    insert into bookItem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        id,
+        bookNum,
+        name,
+        img,
+        price,
+        totalPrice,
+        totalCount,
+        endDate,
+        productId,
+        status,
+        <if test="remark != null and remark != ''" >
+            remark
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=INTEGER},
+        #{bookNum,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{img,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL},
+        #{totalPrice,jdbcType=DECIMAL},
+        #{totalCount,jdbcType=INTEGER},
+        #{endDate,jdbcType=TIMESTAMP},
+        #{productId,jdbcType=INTEGER},
+        #{status,jdbcType=TINYINT},
+        <if test="remark != null and remark != ''" >
+            #{remark,jdbcType=VARCHAR}
+        </if>
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="bookItem" >
+      update bookItem
+      <set>
+          <if test="bookNum != null and bookNum != ''" >
+              bookNum = #{bookNum,jdbcType=VARCHAR},
+          </if>
+          <if test="name != null and name != ''" >
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="img != null and img != ''" >
+              img = #{img,jdbcType=VARCHAR},
+          </if>
+          <if test="price != null" >
+              price = #{price,jdbcType=DECIMAL},
+          </if>
+          <if test="totalPrice != null" >
+              totalPrice = #{totalPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="totalCount != null" >
+              totalCount = #{totalCount,jdbcType=INTEGER},
+          </if>
+          <if test="endDate != null" >
+              endDate = #{endDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="productId != null" >
+              productId = #{productId,jdbcType=INTEGER},
+          </if>
+          <if test="status != null" >
+              status = #{status,jdbcType=TINYINT},
+          </if>
+          <if test="remark != null and remark != ''" >
+              remark = #{remark,jdbcType=VARCHAR}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>

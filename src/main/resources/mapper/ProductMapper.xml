@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.ProductMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Product" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="title" property="title" jdbcType="VARCHAR" />
+      <result column="detailImg" property="detailImg" jdbcType="VARCHAR" />
+      <result column="customerNum" property="customerNum" jdbcType="VARCHAR" />
+      <result column="num" property="num" jdbcType="VARCHAR" />
+      <result column="oriPrice" property="oriPrice" jdbcType="DECIMAL" />
+      <result column="price" property="price" jdbcType="DECIMAL" />
+      <result column="splenicCuff" property="splenicCuff" jdbcType="VARCHAR" />
+      <result column="glasses" property="glasses" jdbcType="VARCHAR" />
+      <result column="electroplatingColour" property="electroplatingColour" jdbcType="VARCHAR" />
+      <result column="typeName" property="typeName" jdbcType="VARCHAR" />
+      <result column="productTypeId" property="productTypeId" jdbcType="INTEGER" />
+      <result column="customerId" property="customerId" jdbcType="INTEGER" />
+      <result column="userId" property="userId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      title,
+      detailImg,
+      customerNum,
+      num,
+      oriPrice,
+      price,
+      splenicCuff,
+      glasses,
+      electroplatingColour,
+      typeName,
+      productTypeId,
+      customerId,
+      userId
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from product where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.ProductQuery">
+      select <include refid="Base_Column_List" /> from product
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords,jdbcType=VARCHAR}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from product where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from product where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Product" >
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        id,
+        name,
+        title,
+        detailImg,
+        customerNum,
+        num,
+        oriPrice,
+        price,
+        splenicCuff,
+        glasses,
+        electroplatingColour,
+        typeName,
+        productTypeId,
+        customerId,
+        <if test="userId != null" >
+            userId
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=INTEGER},
+        #{name,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{detailImg,jdbcType=VARCHAR},
+        #{customerNum,jdbcType=VARCHAR},
+        #{num,jdbcType=VARCHAR},
+        #{oriPrice,jdbcType=DECIMAL},
+        #{price,jdbcType=DECIMAL},
+        #{splenicCuff,jdbcType=VARCHAR},
+        #{glasses,jdbcType=VARCHAR},
+        #{electroplatingColour,jdbcType=VARCHAR},
+        #{typeName,jdbcType=VARCHAR},
+        #{productTypeId,jdbcType=INTEGER},
+        #{customerId,jdbcType=INTEGER},
+        <if test="userId != null" >
+            #{userId,jdbcType=INTEGER}
+        </if>
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Product" >
+      update product
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="title != null and title != ''" >
+              title = #{title,jdbcType=VARCHAR},
+          </if>
+          <if test="detailImg != null and detailImg != ''" >
+              detailImg = #{detailImg,jdbcType=VARCHAR},
+          </if>
+          <if test="customerNum != null and customerNum != ''" >
+              customerNum = #{customerNum,jdbcType=VARCHAR},
+          </if>
+          <if test="num != null and num != ''" >
+              num = #{num,jdbcType=VARCHAR},
+          </if>
+          <if test="oriPrice != null" >
+              oriPrice = #{oriPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="price != null" >
+              price = #{price,jdbcType=DECIMAL},
+          </if>
+          <if test="splenicCuff != null and splenicCuff != ''" >
+              splenicCuff = #{splenicCuff,jdbcType=VARCHAR},
+          </if>
+          <if test="glasses != null and glasses != ''" >
+              glasses = #{glasses,jdbcType=VARCHAR},
+          </if>
+          <if test="electroplatingColour != null and electroplatingColour != ''" >
+              electroplatingColour = #{electroplatingColour,jdbcType=VARCHAR},
+          </if>
+          <if test="typeName != null and typeName != ''" >
+              typeName = #{typeName,jdbcType=VARCHAR},
+          </if>
+          <if test="productTypeId != null" >
+              productTypeId = #{productTypeId,jdbcType=INTEGER},
+          </if>
+          <if test="customerId != null" >
+              customerId = #{customerId,jdbcType=INTEGER},
+          </if>
+          <if test="userId != null" >
+              userId = #{userId,jdbcType=INTEGER}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>

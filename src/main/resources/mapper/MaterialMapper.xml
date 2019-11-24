@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.MaterialMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Material" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="num" property="num" jdbcType="VARCHAR" />
+      <result column="material" property="material" jdbcType="VARCHAR" />
+      <result column="technology" property="technology" jdbcType="VARCHAR" />
+      <result column="oriPrice" property="oriPrice" jdbcType="DECIMAL" />
+      <result column="price" property="price" jdbcType="DECIMAL" />
+      <result column="size" property="size" jdbcType="VARCHAR" />
+      <result column="unit" property="unit" jdbcType="TINYINT" />
+      <result column="unitWeight" property="unitWeight" jdbcType="DECIMAL" />
+      <result column="detailImg" property="detailImg" jdbcType="VARCHAR" />
+      <result column="materialTypeId" property="materialTypeId" jdbcType="INTEGER" />
+      <result column="supplierId" property="supplierId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      num,
+      material,
+      technology,
+      oriPrice,
+      price,
+      size,
+      unit,
+      unitWeight,
+      detailImg,
+      materialTypeId,
+      supplierId
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from material where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.MaterialQuery">
+      select <include refid="Base_Column_List" /> from material
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords,jdbcType=VARCHAR}
+         </if>
+          <if test="name != null and name != ''">
+              <bind name="likeName" value="'%' + _parameter.name + '%'" />
+              and name like #{likeName,jdbcType=VARCHAR}
+          </if>
+          <if test="materialTypeId != null and materialTypeId != ''">
+              and materialTypeId = #{materialTypeId}
+          </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from material where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from material where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Material" >
+    insert into material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        name,
+        num,
+        material,
+        technology,
+        oriPrice,
+        price,
+        size,
+        unit,
+        unitWeight,
+        detailImg,
+        materialTypeId,
+        <if test="supplierId != null" >
+            supplierId
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{name,jdbcType=VARCHAR},
+        #{num,jdbcType=VARCHAR},
+        #{material,jdbcType=VARCHAR},
+        #{technology,jdbcType=VARCHAR},
+        #{oriPrice,jdbcType=DECIMAL},
+        #{price,jdbcType=DECIMAL},
+        #{size,jdbcType=VARCHAR},
+        #{unit,jdbcType=TINYINT},
+        #{unitWeight,jdbcType=DECIMAL},
+        #{detailImg,jdbcType=VARCHAR},
+        #{materialTypeId,jdbcType=INTEGER},
+        <if test="supplierId != null" >
+            #{supplierId,jdbcType=INTEGER}
+        </if>
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Material" >
+      update material
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="num != null and num != ''" >
+              num = #{num,jdbcType=VARCHAR},
+          </if>
+          <if test="material != null and material != ''" >
+              material = #{material,jdbcType=VARCHAR},
+          </if>
+          <if test="technology != null and technology != ''" >
+              technology = #{technology,jdbcType=VARCHAR},
+          </if>
+          <if test="oriPrice != null" >
+              oriPrice = #{oriPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="price != null" >
+              price = #{price,jdbcType=DECIMAL},
+          </if>
+          <if test="size != null and size != ''" >
+              size = #{size,jdbcType=VARCHAR},
+          </if>
+          <if test="unit != null" >
+              unit = #{unit,jdbcType=TINYINT},
+          </if>
+          <if test="unitWeight != null" >
+              unitWeight = #{unitWeight,jdbcType=DECIMAL},
+          </if>
+          <if test="detailImg != null and detailImg != ''" >
+              detailImg = #{detailImg,jdbcType=VARCHAR},
+          </if>
+          <if test="materialTypeId != null" >
+              materialTypeId = #{materialTypeId,jdbcType=INTEGER},
+          </if>
+          <if test="supplierId != null" >
+              supplierId = #{supplierId,jdbcType=INTEGER}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>

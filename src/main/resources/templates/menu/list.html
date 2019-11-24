@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="~{common/head::common-head}"/>
+
+  <!--引入ztree的资源-->
+  <link rel="stylesheet" th:href="@{/static/dist/plugins/ztree/css/zTreeStyle/zTreeStyle.css}">
+  <script th:src="@{/static/dist/plugins/ztree/js/jquery.ztree.core.js}"></script>
+  <script th:src="@{/static/dist/plugins/ztree/js/jquery.ztree.excheck.js}"></script>
+
+  <link rel="stylesheet" th:href="@{/static/dist/plugins/validate/css/bootstrapValidator.min.css}">
+  <script th:src="@{/static/dist/plugins/validate/js/bootstrapValidator.min.js}"></script>
+  <script th:src="@{/static/dist/plugins/validate/js/language/zh_CN.js}"></script>
+
+  <body class="hold-transition skin-blue fixed sidebar-mini">
+    <div class="wrapper">
+      <header th:replace="~{common/top::common-top}"/>
+
+      <aside th:replace="~{common/left::common-left}"/>
+
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h1>菜单管理<small>查询\添加\修改</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="#">Layout</a></li>
+            <li class="active">Fixed</li>
+          </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box box-success">
+
+                <div class="box-body">
+                  <div id="toolbar">
+                    <button type="button" data-ope="add" class="btn bg-olive btn-flat">添加</button>
+                    <button type="button" data-ope="delete" class="btn bg-olive btn-flat">删除</button>
+                    <button type="button" data-ope="edit" class="btn bg-orange btn-flat">编辑</button>
+                  </div>
+                  <!--tree-->
+                  <ul id="menuTree" class="ztree"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer th:replace="~{common/footer::common-footer}"/>
+
+      <aside th:replace="~{common/setting::common-setting}"/>
+      <script th:src="@{/static/bower_components/table/bootstrap-table.js}"></script>
+      <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
+      <script th:src="@{/static/dist/js/request.js}"></script>
+      <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+    </div>
+
+
+    <script>
+		  $(function() {
+		  	var $treeObj;
+		  	//ztree配置信息
+        var menuURL = "[[@{/}]]menus/";
+		  	var setting = {
+		  		async : {
+		  			enable : true,
+		  			type : "get",
+		  			url : menuURL, //加载数据的地址
+		  			autoParam : [ "id=parentId" ],
+		  			dataFilter : filter
+		  		},
+		  		view: {
+		  			fontCss : {"color":"red"}
+		  		},
+          callback: {
+		  		  onClick:function(event){
+		  		    event.preventDefault();
+		  		    return false;
+            }
+		  		}
+		  	};
+		  	function filter(treeId, parentNode, childNodes) {
+		  		var datas = childNodes.data;
+		  		//遍历
+		  		$.each(datas, function(index, item) {
+		  			item.isParent =  !item.leaf;
+		  			delete item.children;
+		  		});
+		  		return datas;
+		  	}
+		  	//创建ztree
+		  	$treeObj = $.fn.zTree.init($("#menuTree"), setting);
+
+		  	//监听按钮事件
+		  	$("#toolbar > button").on("click",function(){
+		  		var $it = $(this);  //$(dom对象)会将dom对象变成jquery对象
+		  		//jquery对象-->dom对象,语法jquery对象[0]
+		  		var opeType = $it.data("ope");
+		  		if("add"==opeType){
+		  			//打开对话框
+		  			//获取选中的权限,作为新添加权限的父权限
+
+		  			//判断有没有选中
+		  			var nodes = $treeObj.getSelectedNodes();
+		  			if(nodes.length!=1){
+		  				alert("有且只能选中一个")
+		  				return;
+		  			}
+		  			var parentNode = nodes[0];
+
+		  			$("#parentId").val(parentNode.id);
+		  			$("#parentName").val(parentNode.name);
+		  			$("#modal-menu").modal('show');
+		  		}else if("edit"==opeType){
+		  			var nodes = $treeObj.getSelectedNodes();
+		  			if(nodes.length!=1){
+		  				alert("有且只能选中一个")
+		  				return;
+		  			}
+
+		  			var currentNode = nodes[0];
+		  			var $form = $("#modal-menu form");
+		  			$form.find("input[id=id]").val(currentNode.id);
+		  			$form.find("input[id=name]").val(currentNode.name);
+		  			$form.find("input[id=URL]").val(currentNode.url);
+		  			$form.find("input[id=icon]").val(currentNode.icon);
+
+		  			if(currentNode.getParentNode()){
+		  			    $form.find("input[id=parentName]").val(currentNode.getParentNode().name);
+		  			}
+		  			$("#modal-menu").modal('show');
+		  		}else{
+		  			//获取选中的叶子节点并且后台要判断当前叶子节点下面没有员工
+		  			var nodes = $treeObj.getSelectedNodes();
+
+		  			//TODO 优化
+		  			var sign=true;
+		  			$.each(nodes,function(index,item){
+		  			    if(item.isParent){
+		  			    	sign=false;
+		  			    	return;
+		  			    }
+		  			});
+
+		  			var idArray = $.map(nodes,function(item,index){
+		  				return item.id;
+		  			})
+
+		  			if(sign){
+		  				$.ajax({
+		  					type : "post",
+		  					url : menuURL+idArray.join(","),
+		  					data : "_method=delete",
+		  					success : function(data){
+		  				    if(data.success){
+		  							$.each(nodes,function(index,item){
+		  								$treeObj.removeNode(item);
+		  							});
+		  				    }else{
+		  				      alert(data.msg);
+		  				    }
+		  					}
+		  				});
+		  			}else{
+		  				alert("不能删除父权限");
+		  			}
+		  		}
+		  	});
+
+		  	//监听对话框的保存事件
+		  	$("#modal-menu button[id=btn-save]").on("click",function(){
+		  		var $form = $("#modal-menu form");
+
+		  		var id = $form.find("input[id=id]").val();
+		  	    var paramData = $form.serialize();
+		  		if(id){
+		  		  request.ajax(menuURL+id,"put",paramData,true,function(data){
+                if(data.success){
+                    $("#modal-menu").modal('hide');
+		  					    var currentNode = $treeObj.getSelectedNodes()[0];
+		  					    currentNode.name=$form.find("input[id=name]").val();
+		  					    currentNode.URL=$form.find("input[id=URL]").val();
+		  					    currentNode.icon=$form.find("input[id=icon]").val();
+		  					    $treeObj.updateNode(currentNode);
+                }else{
+                    alert(data.msg);
+                }
+            });
+		  		}else{
+		  			//添加
+            request.ajax(menuURL,"post",paramData,true,function(data){
+                if(data.success){
+                    $("#modal-menu").modal('hide');
+
+                    if($treeObj.getSelectedNodes()[0].open){
+                        //判断是否展开
+                        var newNode = {id:data.data,name:$form.find("input[name=name]").val()};
+                        $treeObj.addNodes($treeObj.getSelectedNodes()[0], newNode);
+                    }else{
+                        //展开
+                        $treeObj.expandNode($treeObj.getSelectedNodes()[0],true,false,true);
+                    }
+                }else{
+                    alert(data.msg);
+                }
+            });
+		  		}
+		  	});
+
+		  	//清理数据
+		  	$('#modal-menu').on('hidden.bs.modal', function (e) {
+		  		var $form = $(this).find("form");
+		  		$form.find("input[id=id]").val("");
+		  		$form.find("input[id=name]").val("");
+		  		$form.find("input[id=URL]").val("");
+		  		$form.find("input[id=icon]").val("");
+		  		$form.find("input[id=parentName]").val("");
+		  		$form.find("input[id=parentId]").val("");
+		  	});
+		  });
+	  </script>
+
+	  <!-- 添加、编辑对话框 -->
+    <div class="modal fade" id="modal-menu">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Default Modal</h4>
+          </div>
+          <div class="modal-body">
+
+	        <form class="form-horizontal">
+	          <input type="hidden" name="parentId" id="parentId"/>
+	          <input type="hidden" name="id" id="id"/>
+	          <div class="box-body">
+	            <div class="form-group">
+	              <label  class="col-sm-2 control-label">父权限</label>
+	              <div class="col-sm-10">
+	                <input type="text" class="form-control" id="parentName" readonly="readonly" placeholder="父权限">
+	              </div>
+	            </div>
+	            <div class="form-group">
+	              <label for="name" class="col-sm-2 control-label">名字</label>
+	              <div class="col-sm-10">
+	                <input type="text" name="name" class="form-control" id="name" placeholder="名字">
+	              </div>
+	            </div>
+	            <div class="form-group">
+	              <label for="URL" class="col-sm-2 control-label">路径</label>
+	              <div class="col-sm-10">
+	                <input type="text" name="URL" class="form-control" id="URL" placeholder="路径">
+	              </div>
+	            </div>
+	            <div class="form-group">
+	              <label for="icon" class="col-sm-2 control-label">图标</label>
+	              <div class="col-sm-10">
+	                <input type="text" name="icon" class="form-control" id="icon" placeholder="图标">
+	              </div>
+	            </div>
+	          </div>
+	        </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+            <button type="button" id="btn-save" class="btn btn-primary">保存</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+  </body>
+</html>

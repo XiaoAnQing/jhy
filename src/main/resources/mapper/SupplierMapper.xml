@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.SupplierMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Supplier" >
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="email" property="email" jdbcType="VARCHAR" />
+      <result column="address" property="address" jdbcType="VARCHAR" />
+      <result column="account" property="account" jdbcType="VARCHAR" />
+      <result column="linkName" property="linkName" jdbcType="VARCHAR" />
+      <result column="linePhone" property="linePhone" jdbcType="CHAR" />
+      <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      email,
+      address,
+      account,
+      linkName,
+      linePhone,
+      status
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from supplier where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.SupplierQuery">
+      select <include refid="Base_Column_List" /> from supplier
+      <trim prefix="where" prefixOverrides="and |or ">
+
+          <if test="keyWords != null and keyWords != ''">
+              <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+              and name like #{likeKeyWords,jdbcType=VARCHAR}
+          </if>
+          <if test="name != null and name != ''">
+              <bind name="likeName" value="'%' + _parameter.name + '%'" />
+              and name like #{likeName,jdbcType=VARCHAR}
+          </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from supplier where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from supplier where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Supplier" >
+    insert into supplier
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        id,
+        name,
+        email,
+        address,
+        account,
+        linkName,
+        linePhone,
+        status
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=INTEGER},
+        #{name,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{account,jdbcType=VARCHAR},
+        #{linkName,jdbcType=VARCHAR},
+        #{linePhone,jdbcType=CHAR},
+        #{status,jdbcType=TINYINT}
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Supplier" >
+      update supplier
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="email != null and email != ''" >
+              email = #{email,jdbcType=VARCHAR},
+          </if>
+          <if test="address != null and address != ''" >
+              address = #{address,jdbcType=VARCHAR},
+          </if>
+          <if test="account != null and account != ''" >
+              account = #{account,jdbcType=VARCHAR},
+          </if>
+          <if test="linkName != null and linkName != ''" >
+              linkName = #{linkName,jdbcType=VARCHAR},
+          </if>
+          <if test="linePhone != null and linePhone != ''" >
+              linePhone = #{linePhone,jdbcType=CHAR},
+          </if>
+          <if test="status != null" >
+              status = #{status,jdbcType=TINYINT}
+          </if>
+      </set>
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+	
+</mapper>
