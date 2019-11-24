@@ -1,4 +1,7 @@
 /target/
+
 /src/test/
+
 .idea
+
 *.iml
