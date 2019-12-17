@@ -1,7 +1,8 @@
 package com.jhy.plateform.domain;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
-import java.math.BigDecimal;
+
 import java.util.Date;
 
 /**
@@ -20,19 +21,22 @@ public class FileInfo extends BaseDomain {
     //路径
     private String path;                                      
     //打印次数
-    private String printCount;                                      
+    private int printCount;
     //总页数
-    private String page;                                      
+    private int page;
     //标签
     private String label;                                      
      //费用
     private Integer money;                                    
-    //创建时间]                               
+    //创建时间
     private Date createDate;
-    //修改时间]                               
-    private Date modifyDate;                                        
+    //修改时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date modifyDate;
      //用户id
     private Integer userId;
+    //用户名字
+    private String userName;
 
     public String getName() {
         return name;
@@ -50,19 +54,19 @@ public class FileInfo extends BaseDomain {
         this.path = path;
     }
 
-    public String getPrintCount() {
+    public int getPrintCount() {
         return printCount;
     }
 
-    public void setPrintCount(String printCount) {
+    public void setPrintCount(int printCount) {
         this.printCount = printCount;
     }
 
-    public String getPage() {
+    public int getPage() {
         return page;
     }
 
-    public void setPage(String page) {
+    public void setPage(int page) {
         this.page = page;
     }
 
@@ -104,5 +108,13 @@ public class FileInfo extends BaseDomain {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

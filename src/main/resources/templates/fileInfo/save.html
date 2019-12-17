@@ -1,147 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-  <head th:replace="~{common/head::common-head}"/>
+<head th:replace="~{common/head::common-head}"/>
 
-  <link rel="stylesheet" th:href="@{/static/dist/plugins/fileupload/css/fileinput.css}">
-  <script th:src="@{/static/dist/plugins/fileupload/js/fileinput.js}"></script>
-  <script th:src="@{/static/dist/plugins/fileupload/js/zh.js}"></script>
+<link rel="stylesheet" th:href="@{/static/dist/plugins/fileupload/css/fileinput.css}">
+<script th:src="@{/static/dist/plugins/fileupload/js/fileinput.js}"></script>
+<script th:src="@{/static/dist/plugins/fileupload/js/zh.js}"></script>
 
-  <body class="hold-transition skin-blue fixed sidebar-mini">
-    <div class="wrapper">
-      <header th:replace="~{common/top::common-top}"/>
-    
-      <aside th:replace="~{common/left::common-left}"/>
-    
-      <div class="content-wrapper">
-        <section class="content-header">
-          <h1 th:text="${#strings.isEmpty(id) ? '添加文件信息':'编辑文件信息'}"></h1>
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
-            <li><a href="#">文件信息管理</a></li>
-            <li class="active">列表</li>
-          </ol>
-        </section>
-        
-        <!-- Main content -->
-        <!-- Main content -->
-        <section class="content">
-          <div class="row">
-            <!-- right column -->
-            <div class="col-md-12">
-              <!-- Horizontal Form -->
-              <div class="box box-info">
-                <!-- form start -->
-                <form class="form-horizontal" th:action="@{/fileInfos/}+${#strings.isEmpty(fileInfo.id)?'':fileInfo.id}" th:method="post" th:object="${fileInfo}">
-                  <input type="hidden" name="id" th:value="*{id}">
-                  <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
-    
-                  <div class="box-body">   
-                  
-  	  
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">文件名</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="name" name="name" th:value="*{name}" class="form-control" placeholder="文件名" data-bv-notempty="true"/>
-                        </div>
-                      </div>
-  	  
-                      <div class="form-group">
-                        <label for="path" class="col-sm-2 control-label">路径</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="path" name="path" th:value="*{path}"  class="form-control" placeholder="路径" data-bv-notempty="true"/>
-                        </div>
-                      </div>
-                    </div>
+<body class="hold-transition skin-blue fixed sidebar-mini">
+<div class="wrapper">
+  <header th:replace="~{common/top::common-top}"/>
 
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="label" class="col-sm-2 control-label">标签</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="label" name="label" th:value="*{label}" class="form-control" placeholder="标签" />
-                        </div>
-                      </div>
-  	  
-                      <div class="form-group">
-                        <label for="money" class="col-sm-2 control-label">费用</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="money" name="money" th:value="*{money}"  class="form-control" placeholder="费用" data-bv-notempty="true"/>
-                        </div>
-                      </div>
-                    </div>
-  	  
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="createDate" class="col-sm-2 control-label">创建时间</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="createDate" name="createDate" th:value="*{createDate}" class="form-control" placeholder="创建时间" data-bv-notempty="true"/>
-                        </div>
-                      </div>
+  <aside th:replace="~{common/left::common-left}"/>
 
-                      <div class="form-group">
-                        <label for="page" class="col-sm-2 control-label">总页数</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="page" name="page" th:value="*{page}"  class="form-control" placeholder="总页数" data-bv-notempty="true"/>
-                        </div>
-                      </div>
-                    </div>
-  	  
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="resume" class="col-sm-2 control-label">选择</label>
-                        <div class="col-sm-10">
-                          <!-- 就是一个简单的文件表单字段 -->
-                          <input type="file" id="resume" name="resume" multiple />
-                        </div>
-                      </div>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1 th:text="${#strings.isEmpty(id) ? '添加文件信息':'编辑文件信息'}"></h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+        <li><a href="#">文件信息管理</a></li>
+        <li class="active">列表</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- right column -->
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <!-- form start -->
+            <form class="form-horizontal" th:action="@{/fileInfos/}+${#strings.isEmpty(fileInfo.id)?'':fileInfo.id}" th:method="post" th:object="${fileInfo}">
+              <input type="hidden" name="id" th:value="*{id}">
+              <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+
+              <div class="box-body">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="path" class="col-sm-2 control-label">路径</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="path" name="path" th:value="*{path}"  class="form-control" placeholder="路径" data-bv-notempty="true"/>
                     </div>
                   </div>
-                  <div class="box-footer">
-                    <button type="reset" class="btn btn-default btn-flat">重 置</button>
-                    <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+
+                  <div class="form-group">
+                    <label for="resume" class="col-sm-2 control-label">选择</label>
+                    <div class="col-sm-10">
+                      <!-- 就是一个简单的文件表单字段 -->
+                      <input type="file" id="resume" name="resume" multiple />
+                    </div>
                   </div>
-                </form>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">名字</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="name" name="name" th:value="*{name}" class="form-control" placeholder="名字" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="label" class="col-sm-2 control-label">标签</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="label" name="label" th:value="*{label}" class="form-control" placeholder="标签" />
+                    </div>
+                  </div>
+                </div>
+
               </div>
-            </div>
+              <div class="box-footer">
+                <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+              </div>
+            </form>
           </div>
-        </section>
+        </div>
       </div>
-      <footer th:replace="~{common/footer::common-footer}"/>
-    
-      <aside th:replace="~{common/setting::common-setting}"/>
-    </div>
-    
-    <script type="text/javascript">
-        $(function(){
-            var $pathInput = $("input[id='path']");
-            $('#resume').fileinput({
-                'language': 'zh', //设置语言
-                'uploadUrl' : "/jhy/files/upload",
-                'previewFileType':'any',
-                'maxFileCount': 1,
-                'allowedPreviewTypes' : [ 'image' ],
-                'allowedFileExtensions': ['png','jpeg'],//接收的文件后缀
-                'uploadExtraData':{"fileType":"image"},        //额外参数
-                'showUpload':false,
-                'dropZoneEnabled': false,
-                'showClose' : false,//显示右上角X关闭
-                'showRemove' : false,//显示移除按钮,跟随文本框的那个
-                'maxFileSize' : 2048, //允许图片数据大小
-                browseClass: 'btn btn-primary'
-            }).on('fileuploaded', function(event, data, previewId, index) {
-                //异步上传成功结果处理
-                $pathInput.val(data.response.fileName);
-            }).on('fileerror', function(event, data, msg) {
-                //异步上传错误结果处理
-            }).on('filesuccessremove',function(event,id){
-                //TODO
-            }).on('filedeleted',function(event,id){
-                $pathInput.val("");
-            });
-        });
-    </script>
-  </body>
+    </section>
+  </div>
+  <footer th:replace="~{common/footer::common-footer}"/>
+
+  <aside th:replace="~{common/setting::common-setting}"/>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+    var $pathInput = $("input[id='path']");
+    $('#resume').fileinput({
+      'language': 'zh', //设置语言
+      'uploadUrl' : "/jhy/files/upload",
+      'previewFileType':'any',
+      'maxFileCount': 1,
+      'allowedPreviewTypes' : [ 'image' ],
+      'allowedFileExtensions': ['png','jpeg'],//接收的文件后缀
+      'uploadExtraData':{"fileType":"image","paramName":"resume"},        //额外参数
+      'showUpload':false,
+      'dropZoneEnabled': false,
+      'showClose' : false,//显示右上角X关闭
+      'showRemove' : false,//显示移除按钮,跟随文本框的那个
+      'maxFileSize' : 2048, //允许图片数据大小
+      browseClass: 'btn btn-primary'
+    }).on('fileuploaded', function(event, data, previewId, index) {
+      //异步上传成功结果处理
+      $pathInput.val(data.response.fileName);
+    }).on('fileerror', function(event, data, msg) {
+      //异步上传错误结果处理
+    }).on('filesuccessremove',function(event,id){
+      //TODO
+    }).on('filedeleted',function(event,id){
+      $pathInput.val("");
+    });
+  });
+</script>
+</body>
 </html>
  
  
