@@ -28,7 +28,6 @@ public class FileInfoController extends BaseController<FileInfo,FileInfoQuery>{
 		this.baseService = fileInfoService;
 	}
 
-
 	@Override
 	public FileInfo beforeSave(ModelMap modelMap, FileInfo t) throws KPException {
 		HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
@@ -47,5 +46,15 @@ public class FileInfoController extends BaseController<FileInfo,FileInfoQuery>{
 
 	@Override
 	protected void beforeDelete(String[] ids) throws KPException {
+	}
+
+	@Override
+	public String edit(String id, ModelMap modelMap, FileInfo fileInfo) throws KPException {
+		return null;
+	}
+
+	@Override
+	public String editUI(String id, ModelMap modelMap) throws KPException {
+		return null;
 	}
 }

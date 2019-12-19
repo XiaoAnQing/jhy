@@ -42,9 +42,13 @@
     <!-- Select2 -->
     <script th:src="@{/static/bower_components/select2/dist/js/select2.full.js}"></script>
 
+    <!--request-->
+    <script th:src="@{/static/dist/js/request.js}"></script>
+
     <!--获取-->
     <script type="text/javascript">
       $(function(){
+          request.imgServer="http://localhost:8080";
           var moduleName = window.location.pathname;
           if(moduleName.indexOf("/")>0){
               moduleName = moduleName.substring(0,moduleName.indexOf("/"));

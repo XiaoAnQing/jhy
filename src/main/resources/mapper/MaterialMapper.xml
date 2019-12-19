@@ -46,7 +46,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            or name like #{likeKeyWords,jdbcType=VARCHAR} or num like #{likeKeyWords,jdbcType=VARCHAR}
          </if>
           <if test="name != null and name != ''">
               <bind name="likeName" value="'%' + _parameter.name + '%'" />

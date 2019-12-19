@@ -32,9 +32,8 @@
           <!-- Horizontal Form -->
           <div class="box box-info">
             <!-- form start -->
-            <form class="form-horizontal" th:action="@{/fileInfos/}+${#strings.isEmpty(fileInfo.id)?'':fileInfo.id}" th:method="post" th:object="${fileInfo}">
+            <form class="form-horizontal" th:action="@{/fileInfos/}" th:method="post" th:object="${fileInfo}">
               <input type="hidden" name="id" th:value="*{id}">
-              <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
 
               <div class="box-body">
                 <div class="col-md-6">
@@ -73,7 +72,7 @@
               </div>
               <div class="box-footer">
                 <button type="reset" class="btn btn-default btn-flat">重 置</button>
-                <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+                <button type="submit" class="btn btn-success btn-flat" th:text="添加"></button>
               </div>
             </form>
           </div>

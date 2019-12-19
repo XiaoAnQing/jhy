@@ -58,7 +58,7 @@
 								</div>
 							</div>
 							<!--右边-->
-							<div id="container" class="col-sm-9" th:style="'position: relative;height: 400px;background:url(' + @{/img/grid.png} + ');'">
+							<div id="container" class="col-sm-9" th:style="'position: relative;height: 400px;background:url(' + @{/static/img/grid.png} + ');'">
 							</div>
 						</div>
 					</div>
@@ -89,6 +89,16 @@
 		var paddingLeft = 15;
 		var paddingRight = $container.css('padding-right');
 
+		//阻止浏览器默认右键点击事件
+		/*document.oncontextmenu = function() {
+           return false;
+       }*/
+
+		//阻止某元素组织右键点击事件
+		$("#container").bind("contextmenu", function(){
+			return false;
+		})
+
 		$("#widget").on("click","img",function(){
 
 			//点击了之后应该在右边出现对应的图标
@@ -98,6 +108,12 @@
 
 			//处理拖动事件
 			$tempImg.on("mousedown",function(e){
+
+				if (3 == e.which) {
+					//生成一个div外壳
+					return;
+				}
+
 				//开始移动
 				draging = true;
 				e = e || window.event;
@@ -156,9 +172,6 @@
 			//弹出提示
 		});
 
-
-
-		//
 		var queryUrl = '[[@{/}]]materials';
 		$table = $('#material_table').bootstrapTable({
 			url: queryUrl,                      //请求后台的URL（*）
@@ -195,7 +208,10 @@
 				title: '编号'
 			},{
 				field: 'detailImg',
-				title: '图片'
+				title: '图片',
+				formatter:function(value,row,index){
+					return "<img width='21px' height='21px' src='"+request.imgServer+value+"'/>";
+				}
 			}],
 			onLoadError: function () {
 				//加载失败触发
@@ -207,13 +223,10 @@
 				};
 			}
 		});
-
 		$("#keyWords").bind("input propertychange",function () {
-			$table.bootstrapTable('refresh', {query: {name:$("#keyWords").val() }});
+			$table.bootstrapTable('refresh', {query: {keyWords:$("#keyWords").val() }});
 		})
-
 	});
 </script>
-
 </body>
 </html>
