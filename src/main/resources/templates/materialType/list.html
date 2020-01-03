@@ -84,13 +84,13 @@
   <div class="modal fade" id="material_modal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Default Modal</h4>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Default Modal</h4>
         </div>
         <div class="modal-body">
-          <form class="form-horizontal" th:action="@{/materials/}" method="post">
+          <form id="menu" class="form-horizontal" th:action="@{/materials/}" method="post">
             <input type="hidden" name="id">
             <input type="hidden" name="_method">
             <input type="hidden" name="materialTypeId">
@@ -169,12 +169,18 @@
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label for="detailImg" class="col-sm-2 control-label">图片</label>
-                  <div class="col-sm-10">
-                    <input type="text" id="detailImg" name="detailImg" class="form-control" placeholder="图片" data-bv-notempty="true"/>
+                  <div class="form-group">
+                    <label for="icon" class="col-sm-2 control-label">图标</label>
+                    <div class="col-sm-10">
+                        <div class="input-group" style="float: left">
+                          <input type="text"  id="icon" name="detailImg"  class="form-control" readonly="true" placeholder="图标" />
+                        </div>
+                        <div class="col-xs-6 col-md-3" id="icon_show">
+                          <img src= "http://localhost:8080/temp.png"
+                               class="img-circle">
+                        </div>
+                    </div>
                   </div>
-                </div>
               </div>
 
               <div class="col-md-6">
@@ -213,7 +219,7 @@
                 <div class="form-group">
                   <label for="name" class="col-sm-2 control-label">名称</label>
                   <div class="col-sm-10">
-                    <input type="text" id="name" name="name" class="form-control" placeholder="名称" data-bv-notempty="true"/>
+                    <input type="text" name="name" class="form-control" placeholder="名称" data-bv-notempty="true"/>
                   </div>
                 </div>
               </div>
@@ -227,263 +233,361 @@
       </div>
     </div>
   </div>
+
+<!-- 选择图标弹出框 -->
+<div class="modal fade" id="modal-icon" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="label"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="row" >
+          <div class="col-xs-12">
+            <input type="text" id="keyWords" class="form-control" placeholder="关键字" >
+          </div>
+        </div>
+        <div class="row"  id="container_icon" style="padding-top: 10px;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+        <button id="sure-select-btn" type="button" class="btn btn-primary">确 定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 <script th:src="@{/static/dist/js/cache.js}"></script>
 
-<!-- page script -->
 <script type="text/javascript">
-    $(function (){
-        var $table;
-        var $materialTable;
-        $("#searchForm").on("submit",function(e){
-            var param = $(this).serializeObject();
-            $table.bootstrapTable('refresh',{query:param});
-            return false;
-        });
-
-        $("#material_type_modal form").on("submit",function(){
-            var $it = $(this);
-            var materialTypeId= $it.find("input[name='id']").val();
-            var url = $it.attr("action");
-            if(materialTypeId){
-                url = url+materialTypeId;
-            }else{
-                $it.find("input[name='_method']").val("post");
-            }
-            var data = $it.serializeObject();
-            request.ajax(url,materialTypeId?"put":"post",data,true,function (responseData) {
-                //重新加载
-                $table.bootstrapTable('refresh');
-                $('#material_type_modal').modal('hide');
-            });
-            return false;
-        });
-
-        $("#toolbar > button").click(function(){
-            var ope = $(this).data("ope");
-            if("add"==ope){
-                $("#material_type_modal form").clear().find("input[name='id']").val();
-                $('#material_type_modal').modal('show');
-                return;
-            }
-            var idArray = $table.bootstrapTable('getAllSelections');
-            if(idArray.length==0){
-                alert("至少选择一条记录");
-                return;
-            }
-            if("delete"==ope){
-                idArray = $.map(idArray,function(item){
-                    return item.id;
-                });
-                var ids = idArray.join(",");
-                request.ajax("[[@{/}]]/materialTypes/"+ids,"delete",{},true,function(data){
-                    if(data.success){
-                        $table.bootstrapTable('refresh');
-                    }else{
-                        alert(data.msg);
-                    }
-                });
-            }else if("edit"==ope){
-                //界面跳转
-                $('#material_type_modal form').load(idArray);
-                $('#material_type_modal').modal('show');
-            }
-        });
-        var queryUrl = '[[@{/}]]materialTypes';
-
-        $table = $('#materialType_table').bootstrapTable({
-            url: queryUrl,                      //请求后台的URL（*）
-            method: 'GET',                      //请求方式（*）
-            toolbar: '#toolbar',                //工具按钮用哪个容器
-            striped: true,                      //是否显示行间隔色
-            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-            pagination: true,                   //是否显示分页（*）
-            sortable: true,                     //是否启用排序
-            sortOrder: "asc",                   //排序方式
-
-            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-
-            pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
-            pageSize: 10,                       //每页的记录行数（*）
-            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
-
-            clickToSelect: true,                //是否启用点击选中行
-            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-            //得到查询的参数
-            queryParams : function (params) {
-                var temp = {
-                    pageStart: (params.offset / params.limit) + 1,   //页码
-                    sort: params.sort,      //排序列名
-                    sortOrder: params.order //排位命令（desc，asc）
-                };
-                return temp;
-            },
-            columns: [{
-                checkbox: true,
-                visible: true                  //是否显示复选框
-            },{
-                field: 'name',
-                title: '名称'
-            }],
-            onLoadError: function () {
-                //加载失败触发
-            },
-            responseHandler: function(res) {
-                return {
-                    "total": res.total,//总页数
-                    "rows": res.data   //数据
-                };
-            }
-        }).on("click-row.bs.table", function (e, row, $element) {
-          //刷新右边的明细
-          $materialTable.bootstrapTable('refresh', {query: {materialTypeId: row.id}});
-        });
-
-
-        $("#supplierId").select2({
-            placeholder:'请选择供应商',//默认文字提示
-            tags: false,//允许手动添加
-            allowClear: true,//允许清空
-            ajax: {
-                url: '[[@{/}]]suppliers',
-                type:'get',
-                dataType: 'json',
-                data: function (params) {
-                    return {name: params.term || ''};
-                },
-                processResults: function (data) {
-                    var array = new Array();
-                    data = data.data;
-                    if (data) {
-                        for (var i = 0; i < data.length; i++) {
-                            array.push({id: data[i].id, text: data[i].name});
-                            //id为必须的
-                            //text为展示的内容
-                            //可以自定义很多数据
-                        }
-                    }
-                    var result = new Object();
-                    result.results = array;
-                    return result;
-                }
-            }
-        });
-        //------------------------------材料------------------------
-        var queryMaterialUrl = '[[@{/}]]materials';
-        $materialTable = $('#material_table').bootstrapTable({
-            url: queryMaterialUrl,                      //请求后台的URL（*）
-            method: 'GET',                      //请求方式（*）
-            toolbar: '#materialToolbar',                //工具按钮用哪个容器
-            striped: true,                      //是否显示行间隔色
-            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-            pagination: true,                   //是否显示分页（*）
-            sortable: true,                     //是否启用排序
-            sortOrder: "asc",                   //排序方式
-
-            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-
-            pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
-            pageSize: 10,                       //每页的记录行数（*）
-            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
-
-            clickToSelect: true,                //是否启用点击选中行
-            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-            //得到查询的参数
-            queryParams : function (params) {
-                var temp = {
-                    pageStart: (params.offset / params.limit) + 1,   //页码
-                    sort: params.sort,      //排序列名
-                    sortOrder: params.order //排位命令（desc，asc）
-                };
-                return temp;
-            },
-            columns: [{
-                checkbox: true,
-                visible: true                  //是否显示复选框
-            },{
-                field: 'name',
-                title: '名称'
-            },{
-                field: 'num',
-                title: '编号'
-            },{
-                field: 'material',
-                title: '材料'
-            },{
-                field: 'technology',
-                title: '工艺'
-            },{
-                field: 'price',
-                title: '单价'
-            },{
-                field: 'unit',
-                title: '单位'
-            },{
-                field: 'unitWeight',
-                title: '单位重量'
-            },{
-                field: 'size',
-                title: '尺寸'
-            }],
-            onLoadError: function () {
-                //加载失败触发
-            },
-            responseHandler: function(res) {
-                return {
-                    "total": res.total,//总页数
-                    "rows": res.data   //数据
-                }
-            }
-        });
-        $("#materialToolbar > button").on("click",function(){
-            var ope = $(this).data("ope");
-            if(ope=="add"){
-                var idArray = $table.bootstrapTable('getAllSelections');
-                if(idArray.length!=1){
-                    alert("请选择材料类别");
-                    return;
-                }
-                var materialTypeId= idArray[0].id;
-                $("#material_modal  input[name='materialTypeId']").val(materialTypeId);
-                $('#material_modal').modal('show');
-                return;
-            }
-            var idArray = $materialTable.bootstrapTable('getAllSelections');
-            if(idArray.length==0){
-                alert("至少选择一条记录");
-                return;
-            }
-            if("delete"==ope){
-                idArray = $.map(idArray,function(item){
-                    return item.id;
-                });
-                var ids = idArray.join(",");
-                request.ajax("[[@{/}]]/materials/"+ids,"delete",{},true,function(data){
-                    if(data.success){
-                        $materialTable.bootstrapTable('refresh');
-                    }else{
-                        alert(data.msg);
-                    }
-                });
-            }else if("edit"==ope){
-                //编辑
-                //选中左边的类别
-                var materialType = idArray[0].materialTypeId;
-                $("#material_modal form input[name='id']").val("put");
-                //回显数据
-                $('#material_modal form').load(idArray[0]);
-                $('#material_modal').modal('show');
-            }
-        });
+  $(function (){
+    var $table;
+    var $materialTable;
+    $("#searchForm").on("submit",function(e){
+      var param = $(this).serializeObject();
+      $table.bootstrapTable('refresh',{query:param});
+      return false;
     });
-    //单位处理
-    $.each(cache.get(1),function(value,name){
-        $("#unit").append("<option value='"+value+"'>"+name+"</option>");
+
+    $("#material_type_modal form").on("submit",function(){
+      var $it = $(this);
+      var materialTypeId= $it.find("input[name='id']").val();
+      var url = $it.attr("action");
+      if(materialTypeId){
+        url = url+materialTypeId;
+      }else{
+        $it.find("input[name='_method']").val("post");
+      }
+      var data = $it.serializeObject();
+      request.ajax(url,materialTypeId?"put":"post",data,true,function (data) {
+        if(data.success){
+          //重新加载
+          $table.bootstrapTable('refresh');
+          $('#material_type_modal').modal('hide');
+        }else{
+          alert(data.msg);
+        }
+      });
+      return false;
     });
-    //处理材料
-    $.each(cache.get(2),function(value,name){
-        $("#material").append("<option value='"+value+"'>"+name+"</option>");
+
+    $("#toolbar > button").click(function(){
+      var ope = $(this).data("ope");
+      if("add"==ope){
+        $("#material_type_modal form").clear().find("input[name='id']").val();
+        $('#material_type_modal').modal('show');
+        return;
+      }
+      var idArray = $table.bootstrapTable('getAllSelections');
+      if(idArray.length==0){
+        alert("至少选择一条记录");
+        return;
+      }
+      if("delete"==ope){
+        idArray = $.map(idArray,function(item){
+          return item.id;
+        });
+        var ids = idArray.join(",");
+        request.ajax("[[@{/}]]/materialTypes/"+ids,"delete",{},true,function(data){
+          if(data.success){
+            $table.bootstrapTable('refresh');
+          }else{
+            alert(data.msg);
+          }
+        });
+      }else if("edit"==ope){
+        //界面跳转
+        $('#material_type_modal form').load(idArray);
+        $('#material_type_modal').modal('show');
+      }
     });
+    var queryUrl = '[[@{/}]]materialTypes';
+
+    $table = $('#materialType_table').bootstrapTable({
+      url: queryUrl,                      //请求后台的URL（*）
+      method: 'GET',                      //请求方式（*）
+      toolbar: '#toolbar',                //工具按钮用哪个容器
+      striped: true,                      //是否显示行间隔色
+      cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+      pagination: true,                   //是否显示分页（*）
+      sortable: true,                     //是否启用排序
+      sortOrder: "asc",                   //排序方式
+
+      sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+
+      pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+      pageSize: 10,                       //每页的记录行数（*）
+      pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+
+      clickToSelect: true,                //是否启用点击选中行
+      uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+      //得到查询的参数
+      queryParams : function (params) {
+        var temp = {
+          pageStart: (params.offset / params.limit) + 1,   //页码
+          sort: params.sort,      //排序列名
+          sortOrder: params.order //排位命令（desc，asc）
+        };
+        return temp;
+      },
+      columns: [{
+        checkbox: true,
+        visible: true                  //是否显示复选框
+      },{
+        field: 'name',
+        title: '名称'
+      }],
+      onLoadError: function () {
+        //加载失败触发
+      },
+      responseHandler: function(res) {
+        return {
+          "total": res.total,//总页数
+          "rows": res.data   //数据
+        };
+      }
+    }).on("click-row.bs.table", function (e, row, $element) {
+      //刷新右边的明细
+      $materialTable.bootstrapTable('refresh', {query: {materialTypeId: row.id}});
+    });
+
+
+    $("#supplierId").select2({
+      placeholder:'请选择供应商',//默认文字提示
+      tags: false,//允许手动添加
+      allowClear: true,//允许清空
+      ajax: {
+        url: '[[@{/}]]suppliers',
+        type:'get',
+        dataType: 'json',
+        data: function (params) {
+          return {name: params.term || ''};
+        },
+        processResults: function (data) {
+          var array = new Array();
+          data = data.data;
+          if (data) {
+            for (var i = 0; i < data.length; i++) {
+              array.push({id: data[i].id, text: data[i].name});
+              //id为必须的
+              //text为展示的内容
+              //可以自定义很多数据
+            }
+          }
+          var result = new Object();
+          result.results = array;
+          return result;
+        }
+      }
+    });
+    //------------------------------材料------------------------
+    var queryMaterialUrl = '[[@{/}]]materials';
+    $materialTable = $('#material_table').bootstrapTable({
+      url: queryMaterialUrl,                      //请求后台的URL（*）
+      method: 'GET',                      //请求方式（*）
+      toolbar: '#materialToolbar',                //工具按钮用哪个容器
+      striped: true,                      //是否显示行间隔色
+      cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+      pagination: true,                   //是否显示分页（*）
+      sortable: true,                     //是否启用排序
+      sortOrder: "asc",                   //排序方式
+
+      sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+
+      pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+      pageSize: 10,                       //每页的记录行数（*）
+      pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+
+      clickToSelect: true,                //是否启用点击选中行
+      uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+      //得到查询的参数
+      queryParams : function (params) {
+        var temp = {
+          pageStart: (params.offset / params.limit) + 1,   //页码
+          sort: params.sort,      //排序列名
+          sortOrder: params.order //排位命令（desc，asc）
+        };
+        return temp;
+      },
+      columns: [{
+        checkbox: true,
+        visible: true                  //是否显示复选框
+      },{
+        field: 'name',
+        title: '名称'
+      },{
+        field: 'num',
+        title: '编号'
+      },{
+        field: 'material',
+        title: '材料'
+      },{
+        field: 'technology',
+        title: '工艺'
+      },{
+        field: 'price',
+        title: '单价'
+      },{
+        field: 'unit',
+        title: '单位'
+      },{
+        field: 'unitWeight',
+        title: '单位重量'
+      },{
+        field: 'size',
+        title: '尺寸'
+      }],
+      onLoadError: function () {
+        //加载失败触发
+      },
+      responseHandler: function(res) {
+        return {
+          "total": res.total,//总页数
+          "rows": res.data   //数据
+        }
+      }
+    });
+    $("#materialToolbar > button").on("click",function(){
+      var ope = $(this).data("ope");
+      if(ope=="add"){
+        var idArray = $table.bootstrapTable('getAllSelections');
+        if(idArray.length!=1){
+          alert("请选择材料类别");
+          return;
+        }
+
+        var materialTypeId= idArray[0].id;
+        $("#material_modal  input[name='materialTypeId']").val(materialTypeId);
+        $('#material_modal').modal('show');
+        return;
+      }
+      var idArray = $materialTable.bootstrapTable('getAllSelections');
+      if(idArray.length==0){
+        alert("至少选择一条记录");
+        return;
+      }
+      if("delete"==ope){
+        idArray = $.map(idArray,function(item){
+          return item.id;
+        });
+        var ids = idArray.join(",");
+        request.ajax("[[@{/}]]/materials/"+ids,"delete",{},true,function(data){
+          if(data.success){
+            $materialTable.bootstrapTable('refresh');
+          }else{
+            alert(data.msg);
+          }
+        });
+      }else if("edit"==ope){
+        //编辑
+        //选中左边的类别
+        var materialType = idArray[0].materialTypeId;
+        $("#material_modal form input[name='id']").val("put");
+        //回显数据
+        console.log(idArray[0]);
+
+        $('#material_modal').modal('show');
+
+        $('#material_modal form').load(idArray[0],function(){
+          $("#icon_show img").attr('src',request.imgServer+idArray[0].detailImg);
+          request.ajax(request.contextPath+"suppliers/"+idArray[0].supplierId,'get','',true,function(data){
+            if(data.success){
+              data = data.data;
+              var name = data.name;
+              var option = new Option(name,idArray[0].supplierId, true, true);
+              $('#supplierId').append(option).trigger('change');
+            }
+          });
+
+          //
+          /*
+                    $('#supplierId').trigger({
+                      type: 'select2:select'
+                    });*/
+
+          //  $('#supplierId').append(new Option('xx', , false, true));
+          //$('#supplierId').trigger("change");
+        });
+      }
+    });
+  });
+  //单位处理
+  $.each(cache.get(1),function(value,name){
+    $("#unit").append("<option value='"+value+"'>"+name+"</option>");
+  });
+  //处理材料
+  $.each(cache.get(2),function(value,name){
+    $("#material").append("<option value='"+value+"'>"+name+"</option>");
+  });
+
+  //选择图标
+  var $iconModal = $('#modal-icon');
+  function refreshIcon(param){
+    request.ajax("[[@{/}]]fileInfos","get",param,true,function(data){
+      if(data.success){
+        var $containerIcon = $iconModal.find("#container_icon");
+        $containerIcon.empty();
+        $.each(data.data,function(index,item){
+          $('<div class="col-xs-6 col-md-3">'+
+                  '<a href="#" class="thumbnail">'+
+                  '<img  class="img-circle" src="'+request.imgServer+item.path+'" data-img="'+item.path+'"  style="width: 140px; height: 140px;">'+
+                  '</a></div>').appendTo($containerIcon);
+        });
+      }
+    });
+  }
+
+  $iconModal.on("click","a.thumbnail",function(){
+    var imgPath = $(this).find("img").data("img");
+    $("input[id=icon]").val(imgPath);
+    $("#icon_show img").attr('src',request.imgServer+imgPath);
+    $iconModal.modal('hide');
+  })
+
+  $iconModal.on('show.bs.modal', function (e) {
+    //发送ajax请求
+    refreshIcon("");
+  })
+
+  $("#keyWords").bind("input propertychange",function () {
+    var param = $("#keyWords").val();
+    refreshIcon("keyWords="+param);
+  })
+
+  $('#icon').on('click',function () {
+    $iconModal.modal('show');
+  });
+
+  $('#material_modal').on('hide.bs.modal', function () {
+    var option = new Option('','', true, true);
+    $("#icon_show img").attr('src',request.imgServer+'/temp.png');
+    $('#supplierId').append(option);
+    $('#material_modal form').clear();
+  })
 </script>
+<!-- page script -->
 </html>

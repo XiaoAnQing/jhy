@@ -18,9 +18,10 @@ request.ajax=function(URL,method,data,async,callBack){
 	}else{
 		param._method=method;
 	}
+
 	$.ajax({
         cache: true,
-        type: "POST",
+        type: method=="get"?"get":"post",
         url:URL,
         data:param,
         async: async,

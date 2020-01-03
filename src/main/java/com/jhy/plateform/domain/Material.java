@@ -1,6 +1,8 @@
 package com.jhy.plateform.domain;
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
+
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 /**
   * 
@@ -13,29 +15,41 @@ import java.math.BigDecimal;
  */
 @ClassInfoAnno(msg="材料",resourceId="id",dbId = "id")
 public class Material extends BaseDomain {
+    @NotBlank
     //名称
     private String name;                                      
     //编号
+    @NotBlank
     private String num;                                      
     //材料
+    @NotBlank
     private String material;                                      
     //工艺
+    @NotBlank
     private String technology;                                      
     //原价
+    @NotBlank
     private BigDecimal oriPrice;  
     //现价
+    @NotBlank
     private BigDecimal price;  
     //尺寸
+    @NotBlank
     private String size;                                      
     //单位
+    @NotBlank
     private String unit;                                      
     //单位重量
+    @NotBlank
     private BigDecimal unitWeight;  
     //图片
+    @NotBlank
     private String detailImg;                                      
      //类别
+     @NotBlank
     private Integer materialTypeId;                                    
      //供应商
+     @NotBlank
     private Integer supplierId;
 
     public String getName() {

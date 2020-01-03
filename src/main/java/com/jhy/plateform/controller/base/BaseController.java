@@ -14,6 +14,9 @@ import com.jhy.plateform.utils.ConstantUtil;
 import com.jhy.plateform.utils.JsonModel;
 import com.jhy.plateform.utils.Message;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.ParameterizedType;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
   * 
@@ -123,6 +127,19 @@ public abstract class BaseController <T extends BaseDomain,E extends BaseQuery> 
 		return listUI;
 	}
 		
+	@RequestMapping(value="/{id}",method = RequestMethod.GET, headers="X-Requested-With=XMLHttpRequest")
+	@ResponseBody
+	public JsonModel findById(@PathVariable String id){
+		JsonModel jsonModel = new JsonModel();
+		T t = baseService.findById(id);
+		if(t==null){
+			jsonModel.setMsg("id不存在");
+		}else{
+			jsonModel.setSuccess(true);
+			jsonModel.setData(t);
+		}
+		return jsonModel;
+	}
 
 	@RequestMapping(value="/{id}",method = RequestMethod.GET)
 	public String findById(@PathVariable String id,ModelMap modelMap){
@@ -133,7 +150,7 @@ public abstract class BaseController <T extends BaseDomain,E extends BaseQuery> 
 		modelMap.addAttribute(t);
 		return this.detailUI;
 	}
-	
+
 	//保存前方法
 	public abstract T beforeSave(ModelMap modelMap,T t) throws KPException;
 	
@@ -164,7 +181,15 @@ public abstract class BaseController <T extends BaseDomain,E extends BaseQuery> 
 	 * @throws KPException
 	 */
 	@RequestMapping(value="/",method = { RequestMethod.POST })
-	public String add(T t,ModelMap modelMap) throws KPException {
+	public String add(@Validated T t, Errors errors,ModelMap modelMap) throws KPException {
+		if(errors.hasErrors()){
+			//modelMap.addAttribute("errr")
+			List<FieldError> fieldErrors = errors.getFieldErrors();
+			for(FieldError fieldError : fieldErrors){
+				System.out.println(fieldError.getField());
+			}
+			return this.addUI;//转发到添加界面
+		}
 		t=beforeSave(modelMap,t);
 		this.baseService.add(t);
 		return "redirect:" + URI;

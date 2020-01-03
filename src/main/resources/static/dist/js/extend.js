@@ -14,13 +14,13 @@ $.fn.serializeObject = function () {
         return o;
     };
 
-$.fn.load = function (obj) {
+$.fn.load = function (obj,callBack) {
     var $form=$(this);
     var key,value,tagName,type,arr;
     for(x in obj){
         key = x;
         value = obj[x];
-        $("[name='"+key+"'],[name='"+key+"[]']").each(function(){
+        $("[name='"+key+"']").each(function(){
             tagName = $(this)[0].tagName;
             type = $(this).attr('type');
             if(tagName=='INPUT'){
@@ -42,13 +42,24 @@ $.fn.load = function (obj) {
             }
         });
     }
+    if(callBack){
+        callBack();
+    }
 };
-$.fn.clear = function (jsonData) {
+$.fn.clear = function (callBack) {
     var $form=$(this);
 
     var $eles = $form.find("input");
     $.each($eles,function(index,item){
         $(item).val("");
     })
+    $eles = $form.find("select");
+    $.each($eles,function(index,item){
+        $(item).val("");
+    })
     return $form;
+
+
+    callBack();
+
 };

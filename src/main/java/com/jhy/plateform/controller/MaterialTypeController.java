@@ -5,12 +5,15 @@ import com.github.pagehelper.util.StringUtil;
 import com.jhy.plateform.domain.MaterialType;
 import com.jhy.plateform.exception.ExceptionKind;
 import com.jhy.plateform.exception.KPException;
+import com.jhy.plateform.exception.ValidateException;
 import com.jhy.plateform.query.MaterialTypeQuery;
 import com.jhy.plateform.service.MaterialTypeService;
 import com.jhy.plateform.utils.JsonModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,7 +62,12 @@ public class MaterialTypeController {
      */
     @RequestMapping(value="/",method = { RequestMethod.POST })
     @ResponseBody
-    public JsonModel add(MaterialType materialType) throws KPException {
+    public JsonModel add(@Validated MaterialType materialType, Errors errors) throws KPException {
+        if(errors.hasErrors()){
+            //TODO errors.getFieldErrors();
+            ValidateException kpException = new ValidateException("name不能为空");
+            throw kpException;
+        }
         JsonModel jsonModel = new JsonModel();
         materialTypeService.add(materialType);
         jsonModel.setSuccess(true);

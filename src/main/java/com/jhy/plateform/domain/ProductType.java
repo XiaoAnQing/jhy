@@ -1,6 +1,8 @@
 package com.jhy.plateform.domain;
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
+
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 /**
   * 
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
 @ClassInfoAnno(msg="产品类别",resourceId="id",dbId = "id")
 public class ProductType extends BaseDomain {
     //名称
+    @NotBlank
     private String name;
 
     public String getName() {

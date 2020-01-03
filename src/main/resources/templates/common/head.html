@@ -45,10 +45,16 @@
     <!--request-->
     <script th:src="@{/static/dist/js/request.js}"></script>
 
+    <!--validate-->
+    <script th:src="@{/static/dist/plugins/validate/js/bootstrapValidator.min.js}"></script>
+    <script th:src="@{/static/dist/plugins/validate/js/language/zh_CN.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/dist/plugins/validate/css/bootstrapValidator.min.css}">
+
     <!--获取-->
     <script type="text/javascript">
       $(function(){
           request.imgServer="http://localhost:8080";
+          request.contextPath="[[@{/}]]";
           var moduleName = window.location.pathname;
           if(moduleName.indexOf("/")>0){
               moduleName = moduleName.substring(0,moduleName.indexOf("/"));
