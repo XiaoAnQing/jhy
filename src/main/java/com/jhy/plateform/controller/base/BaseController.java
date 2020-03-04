@@ -37,7 +37,7 @@ import java.util.Map;
   * @param <T>
  */
 public abstract class BaseController <T extends BaseDomain,E extends BaseQuery> {
-    
+
 	protected BaseService<T,E> baseService;
 	
 	protected String msg;                       //提示信息
