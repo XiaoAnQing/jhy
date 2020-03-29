@@ -3,19 +3,19 @@
 <mapper namespace="com.jhy.plateform.dao.MaterialMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Material" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="num" property="num" jdbcType="VARCHAR" />
-      <result column="material" property="material" jdbcType="VARCHAR" />
-      <result column="technology" property="technology" jdbcType="VARCHAR" />
-      <result column="oriPrice" property="oriPrice" jdbcType="DECIMAL" />
-      <result column="price" property="price" jdbcType="DECIMAL" />
-      <result column="size" property="size" jdbcType="VARCHAR" />
-      <result column="unit" property="unit" jdbcType="TINYINT" />
-      <result column="unitWeight" property="unitWeight" jdbcType="DECIMAL" />
-      <result column="detailImg" property="detailImg" jdbcType="VARCHAR" />
-      <result column="materialTypeId" property="materialTypeId" jdbcType="INTEGER" />
-      <result column="supplierId" property="supplierId" jdbcType="INTEGER" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="num" property="num"/>
+      <result column="material" property="material"/>
+      <result column="technology" property="technology"/>
+      <result column="oriPrice" property="oriPrice"/>
+      <result column="price" property="price"/>
+      <result column="size" property="size"/>
+      <result column="unit" property="unit"/>
+      <result column="unitWeight" property="unitWeight"/>
+      <result column="detailImg" property="detailImg"/>
+      <result column="materialTypeId" property="materialTypeId"/>
+      <result column="supplierId" property="supplierId"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -36,7 +36,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from material where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from material where id = #{id}
   </select>
   
   
@@ -46,14 +46,17 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            or name like #{likeKeyWords,jdbcType=VARCHAR} or num like #{likeKeyWords,jdbcType=VARCHAR}
+            or name like #{likeKeyWords} or num like #{likeKeyWords}
          </if>
           <if test="name != null and name != ''">
               <bind name="likeName" value="'%' + _parameter.name + '%'" />
-              and name like #{likeName,jdbcType=VARCHAR}
+              and name like #{likeName}
           </if>
-          <if test="materialTypeId != null and materialTypeId != ''">
+           <if test="materialTypeId != null and materialTypeId != ''">
               and materialTypeId = #{materialTypeId}
+          </if>
+           <if test="supplierId != null and supplierId != ''">
+              and supplierId = #{supplierId}
           </if>
       </trim>
       order by id DESC
@@ -62,7 +65,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from material where id = #{id,jdbcType=INTEGER}
+      delete from material where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -93,19 +96,19 @@
         </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{name,jdbcType=VARCHAR},
-        #{num,jdbcType=VARCHAR},
-        #{material,jdbcType=VARCHAR},
-        #{technology,jdbcType=VARCHAR},
-        #{oriPrice,jdbcType=DECIMAL},
-        #{price,jdbcType=DECIMAL},
-        #{size,jdbcType=VARCHAR},
-        #{unit,jdbcType=TINYINT},
-        #{unitWeight,jdbcType=DECIMAL},
-        #{detailImg,jdbcType=VARCHAR},
-        #{materialTypeId,jdbcType=INTEGER},
+        #{name},
+        #{num},
+        #{material},
+        #{technology},
+        #{oriPrice},
+        #{price},
+        #{size},
+        #{unit},
+        #{unitWeight},
+        #{detailImg},
+        #{materialTypeId},
         <if test="supplierId != null" >
-            #{supplierId,jdbcType=INTEGER}
+            #{supplierId}
         </if>
     </trim>
   </insert>
@@ -115,43 +118,43 @@
       update material
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="num != null and num != ''" >
-              num = #{num,jdbcType=VARCHAR},
+              num = #{num},
           </if>
           <if test="material != null and material != ''" >
-              material = #{material,jdbcType=VARCHAR},
+              material = #{material},
           </if>
           <if test="technology != null and technology != ''" >
-              technology = #{technology,jdbcType=VARCHAR},
+              technology = #{technology},
           </if>
           <if test="oriPrice != null" >
-              oriPrice = #{oriPrice,jdbcType=DECIMAL},
+              oriPrice = #{oriPrice},
           </if>
           <if test="price != null" >
-              price = #{price,jdbcType=DECIMAL},
+              price = #{price},
           </if>
           <if test="size != null and size != ''" >
-              size = #{size,jdbcType=VARCHAR},
+              size = #{size},
           </if>
           <if test="unit != null" >
-              unit = #{unit,jdbcType=TINYINT},
+              unit = #{unit},
           </if>
           <if test="unitWeight != null" >
-              unitWeight = #{unitWeight,jdbcType=DECIMAL},
+              unitWeight = #{unitWeight},
           </if>
           <if test="detailImg != null and detailImg != ''" >
-              detailImg = #{detailImg,jdbcType=VARCHAR},
+              detailImg = #{detailImg},
           </if>
           <if test="materialTypeId != null" >
-              materialTypeId = #{materialTypeId,jdbcType=INTEGER},
+              materialTypeId = #{materialTypeId},
           </if>
           <if test="supplierId != null" >
-              supplierId = #{supplierId,jdbcType=INTEGER}
+              supplierId = #{supplierId}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

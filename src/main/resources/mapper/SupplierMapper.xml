@@ -3,14 +3,14 @@
 <mapper namespace="com.jhy.plateform.dao.SupplierMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Supplier" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="email" property="email" jdbcType="VARCHAR" />
-      <result column="address" property="address" jdbcType="VARCHAR" />
-      <result column="account" property="account" jdbcType="VARCHAR" />
-      <result column="linkName" property="linkName" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="email" property="email"/>
+      <result column="address" property="address"/>
+      <result column="account" property="account"/>
+      <result column="linkName" property="linkName"/>
       <result column="linePhone" property="linePhone" jdbcType="CHAR" />
-      <result column="status" property="status" jdbcType="TINYINT" />
+      <result column="status" property="status"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -26,7 +26,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from supplier where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from supplier where id = #{id}
   </select>
   
   
@@ -37,11 +37,11 @@
 
           <if test="keyWords != null and keyWords != ''">
               <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-              and name like #{likeKeyWords,jdbcType=VARCHAR}
+              and name like #{likeKeyWords}
           </if>
           <if test="name != null and name != ''">
               <bind name="likeName" value="'%' + _parameter.name + '%'" />
-              and name like #{likeName,jdbcType=VARCHAR}
+              and name like #{likeName}
           </if>
       </trim>
       order by id DESC
@@ -50,7 +50,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from supplier where id = #{id,jdbcType=INTEGER}
+      delete from supplier where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -75,14 +75,14 @@
         status
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR},
-        #{address,jdbcType=VARCHAR},
-        #{account,jdbcType=VARCHAR},
-        #{linkName,jdbcType=VARCHAR},
+        #{id},
+        #{name},
+        #{email},
+        #{address},
+        #{account},
+        #{linkName},
         #{linePhone,jdbcType=CHAR},
-        #{status,jdbcType=TINYINT}
+        #{status}
     </trim>
   </insert>
   
@@ -91,28 +91,28 @@
       update supplier
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="email != null and email != ''" >
-              email = #{email,jdbcType=VARCHAR},
+              email = #{email},
           </if>
           <if test="address != null and address != ''" >
-              address = #{address,jdbcType=VARCHAR},
+              address = #{address},
           </if>
           <if test="account != null and account != ''" >
-              account = #{account,jdbcType=VARCHAR},
+              account = #{account},
           </if>
           <if test="linkName != null and linkName != ''" >
-              linkName = #{linkName,jdbcType=VARCHAR},
+              linkName = #{linkName},
           </if>
           <if test="linePhone != null and linePhone != ''" >
               linePhone = #{linePhone,jdbcType=CHAR},
           </if>
           <if test="status != null" >
-              status = #{status,jdbcType=TINYINT}
+              status = #{status}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

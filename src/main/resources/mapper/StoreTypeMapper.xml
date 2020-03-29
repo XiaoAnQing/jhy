@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.StoreTypeMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.StoreType" >
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="num" property="num"/>
+      <result column="width" property="width"/>
+      <result column="height" property="height"/>
+      <result column="row" property="row"/>
+      <result column="col" property="col"/>
+      <result column="z" property="z"/>
+      <result column="status" property="status"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      num,
+      width,
+      height,
+      row,
+      col,
+      z,
+      status
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from storeType where id = #{id}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.StoreTypeQuery">
+      select <include refid="Base_Column_List" /> from storeType
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from storeType where id = #{id}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from storeType where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.StoreType" >
+    insert into storeType
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        name,
+        num,
+        width,
+        height,
+        row,
+        col,
+        z,
+        status
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{name},
+        #{num},
+        #{width},
+        #{height},
+        #{row},
+        #{col},
+        #{z},
+        #{status}
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.StoreType" >
+      update storeType
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name},
+          </if>
+          <if test="num != null and num != ''" >
+              num = #{num},
+          </if>
+          <if test="width != null" >
+              width = #{width},
+          </if>
+          <if test="height != null" >
+              height = #{height},
+          </if>
+          <if test="row != null" >
+              row = #{row},
+          </if>
+          <if test="col != null" >
+              col = #{col},
+          </if>
+          <if test="z != null" >
+              z = #{z},
+          </if>
+          <if test="status != null" >
+              status = #{status}
+          </if>
+      </set>
+      where id = #{id}
+  </update>
+	
+</mapper>

@@ -3,17 +3,17 @@
 <mapper namespace="com.jhy.plateform.dao.DictMapper">
 
   <resultMap id="BaseResultMap" type="dict" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="type" property="type" jdbcType="INTEGER" />
-      <result column="note" property="note" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="type" property="type"/>
+      <result column="note" property="note"/>
   </resultMap>
 
     <resultMap id="BaseResultMapDict" type="dict">
-        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="type" property="type"/>
         <collection property="dictVals" ofType="dictVal" >
-            <result column="name" property="name" jdbcType="VARCHAR" />
-            <result column="value" property="value" jdbcType="VARCHAR" />
+            <result column="name" property="name"/>
+            <result column="value" property="value"/>
         </collection>
     </resultMap>
   
@@ -26,7 +26,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from t_dict where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from t_dict where id = #{id}
   </select>
   
   
@@ -36,7 +36,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by type DESC
@@ -45,7 +45,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from t_dict where id = #{id,jdbcType=INTEGER}
+      delete from t_dict where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -72,15 +72,15 @@
         </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
+        #{id},
         <if test="name != null and name != ''" >
-            #{name,jdbcType=VARCHAR},
+            #{name},
         </if>
         <if test="type != null" >
-            #{type,jdbcType=INTEGER},
+            #{type},
         </if>
         <if test="note != null and note != ''" >
-            #{note,jdbcType=VARCHAR}
+            #{note}
         </if>
     </trim>
   </insert>
@@ -90,16 +90,16 @@
       update t_dict
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="type != null" >
-              type = #{type,jdbcType=INTEGER},
+              type = #{type},
           </if>
           <if test="note != null and note != ''" >
-              note = #{note,jdbcType=VARCHAR}
+              note = #{note}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 
     <select id="selectDict"  resultMap="BaseResultMapDict">

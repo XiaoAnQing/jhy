@@ -3,9 +3,9 @@
 <mapper namespace="com.jhy.plateform.dao.LineMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Line" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="num" property="num" jdbcType="INTEGER" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="num" property="num"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -16,7 +16,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from line where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from line where id = #{id}
   </select>
   
   
@@ -26,10 +26,10 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
          <if test="name != null and name != ''">
-            and name = #{name,jdbcType=VARCHAR}
+            and name = #{name}
          </if>
       </trim>
       order by id DESC
@@ -38,7 +38,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from line where id = #{id,jdbcType=INTEGER}
+      delete from line where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -58,9 +58,9 @@
         num
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR},
-        #{num,jdbcType=INTEGER}
+        #{id},
+        #{name},
+        #{num}
     </trim>
   </insert>
   
@@ -69,13 +69,13 @@
       update line
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="num != null" >
-              num = #{num,jdbcType=INTEGER}
+              num = #{num}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

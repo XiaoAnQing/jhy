@@ -3,14 +3,14 @@
 <mapper namespace="com.jhy.plateform.dao.LineItemMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.LineItem" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="icon" property="icon" jdbcType="VARCHAR" />
-      <result column="mangerId" property="mangerId" jdbcType="INTEGER" />
-      <result column="position" property="position" jdbcType="VARCHAR" />
-      <result column="orderNum" property="orderNum" jdbcType="INTEGER" />
-      <result column="lineId" property="lineId" jdbcType="INTEGER" />
-      <result column="stationId" property="stationId" jdbcType="INTEGER" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="icon" property="icon"/>
+      <result column="mangerId" property="mangerId"/>
+      <result column="position" property="position"/>
+      <result column="orderNum" property="orderNum"/>
+      <result column="lineId" property="lineId"/>
+      <result column="stationId" property="stationId"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -26,7 +26,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from lineItem where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from lineItem where id = #{id}
   </select>
   
   
@@ -36,7 +36,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
@@ -45,7 +45,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from lineItem where id = #{id,jdbcType=INTEGER}
+      delete from lineItem where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -70,14 +70,14 @@
         stationId
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR},
-        #{icon,jdbcType=VARCHAR},
-        #{mangerId,jdbcType=INTEGER},
-        #{position,jdbcType=VARCHAR},
-        #{orderNum,jdbcType=INTEGER},
-        #{lineId,jdbcType=INTEGER},
-        #{stationId,jdbcType=INTEGER}
+        #{id},
+        #{name},
+        #{icon},
+        #{mangerId},
+        #{position},
+        #{orderNum},
+        #{lineId},
+        #{stationId}
     </trim>
   </insert>
   
@@ -86,28 +86,28 @@
       update lineItem
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="icon != null and icon != ''" >
-              icon = #{icon,jdbcType=VARCHAR},
+              icon = #{icon},
           </if>
           <if test="mangerId != null" >
-              mangerId = #{mangerId,jdbcType=INTEGER},
+              mangerId = #{mangerId},
           </if>
           <if test="position != null and position != ''" >
-              position = #{position,jdbcType=VARCHAR},
+              position = #{position},
           </if>
           <if test="orderNum != null" >
-              orderNum = #{orderNum,jdbcType=INTEGER},
+              orderNum = #{orderNum},
           </if>
           <if test="lineId != null" >
-              lineId = #{lineId,jdbcType=INTEGER},
+              lineId = #{lineId},
           </if>
           <if test="stationId != null" >
-              stationId = #{stationId,jdbcType=INTEGER}
+              stationId = #{stationId}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

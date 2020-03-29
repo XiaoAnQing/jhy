@@ -3,24 +3,24 @@
 <mapper namespace="com.jhy.plateform.dao.MenuMapper">
 
   <resultMap id="BaseResultMap" type="menu" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="URL" property="URL" jdbcType="VARCHAR" />
-      <result column="icon" property="icon" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="URL" property="URL"/>
+      <result column="icon" property="icon"/>
       <result column="leaf" property="leaf" jdbcType="BIT" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="parentId" property="parentId" jdbcType="INTEGER" />
-      <result column="accessToken" property="accessToken" jdbcType="VARCHAR" />
+      <result column="name" property="name"/>
+      <result column="parentId" property="parentId"/>
+      <result column="accessToken" property="accessToken"/>
   </resultMap>
   
   
   <resultMap id="LevelMap" type="menu" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="URL" property="URL" jdbcType="VARCHAR" />
-      <result column="icon" property="icon" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="URL" property="URL"/>
+      <result column="icon" property="icon"/>
       <result column="leaf" property="leaf" jdbcType="BIT" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="parentId" property="parentId" jdbcType="INTEGER" />
-      <result column="accessToken" property="accessToken" jdbcType="VARCHAR" />
+      <result column="name" property="name"/>
+      <result column="parentId" property="parentId"/>
+      <result column="accessToken" property="accessToken"/>
       
       <collection property="children" ofType="menu" column="id" select="com.jhy.plateform.dao.MenuMapper.children"></collection>
   </resultMap>
@@ -47,7 +47,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from t_menu where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from t_menu where id = #{id}
   </select>
   
   <!-- 多条件查询 -->
@@ -56,11 +56,11 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
          <choose>
              <when test="parentId != null">
-                and parentId = #{parentId,jdbcType=INTEGER}
+                and parentId = #{parentId}
              </when>
              <otherwise>
                 and parentId is null
@@ -94,7 +94,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from t_menu where id = #{id,jdbcType=INTEGER}
+      delete from t_menu where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -128,23 +128,23 @@
         accessToken
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
+        #{id},
         <if test="URL != null and URL != ''" >
-            #{URL,jdbcType=VARCHAR},
+            #{URL},
         </if>
         <if test="icon != null and icon != ''" >
-            #{icon,jdbcType=VARCHAR},
+            #{icon},
         </if>
         <if test="leaf != null" >
             #{leaf,jdbcType=BIT},
         </if>
         <if test="name != null and name != ''" >
-            #{name,jdbcType=VARCHAR},
+            #{name},
         </if>
         <if test="parentId != null" >
-            #{parentId,jdbcType=INTEGER},
+            #{parentId},
         </if>
-        #{accessToken,jdbcType=VARCHAR}
+        #{accessToken}
     </trim>
   </insert>
   
@@ -153,25 +153,25 @@
       update t_menu
       <set>
           <if test="URL != null and URL != ''" >
-              URL = #{URL,jdbcType=VARCHAR},
+              URL = #{URL},
           </if>
           <if test="icon != null and icon != ''" >
-              icon = #{icon,jdbcType=VARCHAR},
+              icon = #{icon},
           </if>
           <if test="leaf != null" >
               leaf = #{leaf,jdbcType=BIT},
           </if>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="parentId != null" >
-              parentId = #{parentId,jdbcType=INTEGER},
+              parentId = #{parentId},
           </if>
           <if test="accessToken != null and accessToken != ''" >
-              accessToken = #{accessToken,jdbcType=VARCHAR}
+              accessToken = #{accessToken}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
   
   <!-- 根据roleIds IN 查询 -->
@@ -192,10 +192,10 @@
     delete from t_role_menu 
     <trim prefix="where" prefixOverrides="and | or ">
        <if test="roleId != null" >
-           roleId = #{roleId,jdbcType=INTEGER}
+           roleId = #{roleId}
        </if>
        <if test="menuId != null" >
-           and menuId = #{menuId,jdbcType=INTEGER}
+           and menuId = #{menuId}
        </if>
     </trim>
   </delete>

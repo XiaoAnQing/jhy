@@ -3,9 +3,9 @@
 <mapper namespace="com.jhy.plateform.dao.DictValMapper">
 
   <resultMap id="BaseResultMap" type="dictVal" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="value" property="value" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="value" property="value"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -16,7 +16,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from t_dictval where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from t_dictval where id = #{id}
   </select>
   
   
@@ -26,7 +26,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
          <if test="dictId != null and dictId != ''">
            and dictId = #{dictId}
@@ -38,7 +38,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from t_dictval where id = #{id,jdbcType=INTEGER}
+      delete from t_dictval where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -58,9 +58,9 @@
         dictId
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{name,jdbcType=VARCHAR},
-        #{value,jdbcType=VARCHAR},
-        #{dict.id,jdbcType=INTEGER}
+        #{name},
+        #{value},
+        #{dict.id}
     </trim>
   </insert>
   
@@ -69,21 +69,21 @@
       update t_dictval
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="value != null and value != ''" >
-              value = #{value,jdbcType=VARCHAR},
+              value = #{value},
           </if>
           <if test="dict != null" >
-              dictId = #{dict.id,jdbcType=INTEGER}
+              dictId = #{dict.id}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
   
   <!-- 根据字典清除明细 -->
   <delete id="clearByDict" parameterType="INTEGER">
-      delete from t_dictval where dictId =  #{dictId,jdbcType=INTEGER}
+      delete from t_dictval where dictId =  #{dictId}
   </delete>
   
   <!-- 批量添加 -->

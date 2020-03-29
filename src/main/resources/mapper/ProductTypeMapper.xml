@@ -3,8 +3,8 @@
 <mapper namespace="com.jhy.plateform.dao.ProductTypeMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.ProductType" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -14,7 +14,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from productType where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from productType where id = #{id}
   </select>
   
   
@@ -24,7 +24,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
@@ -33,7 +33,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from productType where id = #{id,jdbcType=INTEGER}
+      delete from productType where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -52,8 +52,8 @@
         name
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR}
+        #{id},
+        #{name}
     </trim>
   </insert>
   
@@ -62,10 +62,10 @@
       update productType
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR}
+              name = #{name}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

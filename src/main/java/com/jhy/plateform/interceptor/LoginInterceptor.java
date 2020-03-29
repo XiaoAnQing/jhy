@@ -12,9 +12,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(true){
-            return true;
-        }
         HttpSession session = request.getSession();
         if(session.getAttribute(ConstantUtil.SESSION_KEY)==null){
             //没有登录
@@ -23,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             if(requestURI.startsWith(request.getContextPath()+"/login")){
                 return true;
             }
-            response.sendRedirect("login");
+            response.sendRedirect(request.getContextPath()+"/login");
             return false;
         }else{
             //有登录

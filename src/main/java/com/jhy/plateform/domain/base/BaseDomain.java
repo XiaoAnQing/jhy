@@ -14,8 +14,8 @@ public abstract class BaseDomain implements Serializable {
 	private static final long serialVersionUID = -600415752154494413L;
 
 	public Integer id;         //数据库主键
-    
-    public Byte status;      //状态
+
+	public Byte status;      //状态
     
     private String remark;     //备注信息
 

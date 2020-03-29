@@ -55,6 +55,7 @@
                       <div class="form-group">
                         <label for="mangerId" class="col-sm-2 control-label">主管</label>
                         <div class="col-sm-10">
+                          <select class="form-control select2" style="width: 100%;" id="mangerId" name="mangerId" data-bv-notempty="true"></select>
                           <input type="text" id="mangerId" name="mangerId" th:value="*{mangerId}" class="form-control" placeholder="主管" data-bv-notempty="true"/>
                         </div>
                       </div>
@@ -78,20 +79,20 @@
                       <div class="form-group">
                         <label for="lineId" class="col-sm-2 control-label">线路</label>
                         <div class="col-sm-10">
-                          <input type="text" id="lineId" name="lineId" th:value="*{lineId}"  class="form-control" placeholder="线路" data-bv-notempty="true"/>
+                          <select class="form-control select2" style="width: 100%;" id="lineId" name="lineId" data-bv-notempty="true"></select>
                         </div>
                       </div>
                     </div>
   	  
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="stationId" class="col-sm-2 control-label">工序</label>
+                        <label for="stationId" class="col-sm-2 control-label">工艺</label>
                         <div class="col-sm-10">
-                          <input type="text" id="stationId" name="stationId" th:value="*{stationId}" class="form-control" placeholder="工序" data-bv-notempty="true"/>
+                          <select class="form-control select2" style="width: 100%;" id="stationId" name="stationId" data-bv-notempty="true"></select>
                         </div>
                       </div>
-      
-     
+                    </div>
+
                   </div>
                   <div class="box-footer">
                     <button type="reset" class="btn btn-default btn-flat">重 置</button>
@@ -116,7 +117,62 @@
                     invalid: 'glyphicon glyphicon-remove',
                     validating: 'glyphicon glyphicon-refresh'
                 }
-            }); 
+            });
+
+          $("#lineId").select2({
+            placeholder:'请选择线路',//默认文字提示
+            tags: false,//允许手动添加
+            allowClear: true,//允许清空
+            ajax: {
+              url: '[[@{/}]]lines',
+              type:'get',
+              dataType: 'json',
+              data: function (params) {
+                return {name: params.term || ''};
+              },
+              processResults: function (data) {
+                var array = new Array();
+                data = data.data;
+                if (data) {
+                  for (var i = 0; i < data.length; i++) {
+                    array.push({id: data[i].id, text: data[i].name});
+                  }
+                }
+                var result = new Object();
+                result.results = array;
+                return result;
+              }
+            }
+          });
+          $("#stationId").select2({
+            placeholder:'请选择工艺',//默认文字提示
+            tags: false,//允许手动添加
+            allowClear: true,//允许清空
+            ajax: {
+              url: '[[@{/}]]stations',
+              type:'get',
+              dataType: 'json',
+              data: function (params) {
+                return {name: params.term || ''};
+              },
+              processResults: function (data) {
+                var array = new Array();
+                data = data.data;
+                if (data) {
+                  for (var i = 0; i < data.length; i++) {
+                    array.push({id: data[i].id, text: data[i].name});
+                  }
+                }
+                var result = new Object();
+                result.results = array;
+                return result;
+              }
+            }
+          });
+
+
+          //TODO 工艺相关信息
+
         });
     </script>
   </body>

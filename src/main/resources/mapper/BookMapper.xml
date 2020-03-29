@@ -3,18 +3,18 @@
 <mapper namespace="com.jhy.plateform.dao.BookMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Book" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="customerNum" property="customerNum" jdbcType="VARCHAR" />
-      <result column="num" property="num" jdbcType="VARCHAR" />
-      <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
-      <result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
-      <result column="price" property="price" jdbcType="DECIMAL" />
-      <result column="customerId" property="customerId" jdbcType="INTEGER" />
-      <result column="lineId" property="lineId" jdbcType="INTEGER" />
-      <result column="userId" property="userId" jdbcType="INTEGER" />
-      <result column="bonus" property="bonus" jdbcType="DECIMAL" />
-      <result column="remark" property="remark" jdbcType="VARCHAR" />
-      <result column="status" property="status" jdbcType="TINYINT" />
+      <id column="id" property="id"/>
+      <result column="customerNum" property="customerNum"/>
+      <result column="num" property="num"/>
+      <result column="createDate" property="createDate"/>
+      <result column="endDate" property="endDate"/>
+      <result column="price" property="price"/>
+      <result column="customerId" property="customerId"/>
+      <result column="lineId" property="lineId"/>
+      <result column="userId" property="userId"/>
+      <result column="bonus" property="bonus"/>
+      <result column="remark" property="remark"/>
+      <result column="status" property="status"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -34,7 +34,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from book where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from book where id = #{id}
   </select>
   
   
@@ -44,7 +44,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
@@ -53,7 +53,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from book where id = #{id,jdbcType=INTEGER}
+      delete from book where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -86,22 +86,22 @@
         status
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{customerNum,jdbcType=VARCHAR},
-        #{num,jdbcType=VARCHAR},
-        #{createDate,jdbcType=TIMESTAMP},
-        #{endDate,jdbcType=TIMESTAMP},
-        #{price,jdbcType=DECIMAL},
-        #{customerId,jdbcType=INTEGER},
-        #{lineId,jdbcType=INTEGER},
-        #{userId,jdbcType=INTEGER},
+        #{id},
+        #{customerNum},
+        #{num},
+        #{createDate},
+        #{endDate},
+        #{price},
+        #{customerId},
+        #{lineId},
+        #{userId},
         <if test="bonus != null" >
-            #{bonus,jdbcType=DECIMAL},
+            #{bonus},
         </if>
         <if test="remark != null and remark != ''" >
-            #{remark,jdbcType=VARCHAR},
+            #{remark},
         </if>
-        #{status,jdbcType=TINYINT}
+        #{status}
     </trim>
   </insert>
   
@@ -110,40 +110,40 @@
       update book
       <set>
           <if test="customerNum != null and customerNum != ''" >
-              customerNum = #{customerNum,jdbcType=VARCHAR},
+              customerNum = #{customerNum},
           </if>
           <if test="num != null and num != ''" >
-              num = #{num,jdbcType=VARCHAR},
+              num = #{num},
           </if>
           <if test="createDate != null" >
-              createDate = #{createDate,jdbcType=TIMESTAMP},
+              createDate = #{createDate},
           </if>
           <if test="endDate != null" >
-              endDate = #{endDate,jdbcType=TIMESTAMP},
+              endDate = #{endDate},
           </if>
           <if test="price != null" >
-              price = #{price,jdbcType=DECIMAL},
+              price = #{price},
           </if>
           <if test="customerId != null" >
-              customerId = #{customerId,jdbcType=INTEGER},
+              customerId = #{customerId},
           </if>
           <if test="lineId != null" >
-              lineId = #{lineId,jdbcType=INTEGER},
+              lineId = #{lineId},
           </if>
           <if test="userId != null" >
-              userId = #{userId,jdbcType=INTEGER},
+              userId = #{userId},
           </if>
           <if test="bonus != null" >
-              bonus = #{bonus,jdbcType=DECIMAL},
+              bonus = #{bonus},
           </if>
           <if test="remark != null and remark != ''" >
-              remark = #{remark,jdbcType=VARCHAR},
+              remark = #{remark},
           </if>
           <if test="status != null" >
-              status = #{status,jdbcType=TINYINT}
+              status = #{status}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

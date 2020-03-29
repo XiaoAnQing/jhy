@@ -3,19 +3,16 @@
 <mapper namespace="com.jhy.plateform.dao.BookItemMapper">
 
   <resultMap id="BaseResultMap" type="bookItem" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="bookNum" property="bookNum" jdbcType="VARCHAR" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="img" property="img" jdbcType="VARCHAR" />
-      <result column="price" property="price" jdbcType="DECIMAL" />
-      <result column="totalPrice" property="totalPrice" jdbcType="DECIMAL" />
-      <result column="totalCount" property="totalCount" jdbcType="INTEGER" />
-      <result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
-      <result column="productId" property="productId" jdbcType="INTEGER" />
-      <result column="status" property="status" jdbcType="TINYINT" />
-      <result column="remark" property="remark" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="bookNum" property="bookNum"/>
+      <result column="name" property="name"/>
+      <result column="img" property="img"/>
+      <result column="price" property="price"/>
+      <result column="totalPrice" property="totalPrice"/>
+      <result column="totalCount" property="totalCount"/>
+      <result column="productId" property="productId"/>
   </resultMap>
-  
+
   <sql id="Base_Column_List" >
       id,
       bookNum,
@@ -24,36 +21,33 @@
       price,
       totalPrice,
       totalCount,
-      endDate,
-      productId,
-      status,
-      remark
+      productId
   </sql>
-  
+
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from bookItem where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from bookItem where id = #{id}
   </select>
-  
-  
+
+
   <!-- 多条件查询 -->
   <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.BookItemQuery">
       select <include refid="Base_Column_List" /> from bookItem
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
   </select>
-  
-  
+
+
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from bookItem where id = #{id,jdbcType=INTEGER}
+      delete from bookItem where id = #{id}
   </delete>
-  
+
   <!-- 批量删除 -->
   <delete id="deleteByIds" parameterType="java.lang.String">
       delete from bookItem where id in
@@ -61,7 +55,7 @@
           #{id}
       </foreach>
   </delete>
-  
+
   <!--部分字段允许为空-->
   <insert id="add" parameterType="bookItem" >
     insert into bookItem
@@ -73,66 +67,47 @@
         price,
         totalPrice,
         totalCount,
-        endDate,
         productId,
-        status,
-        <if test="remark != null and remark != ''" >
-            remark
-        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{bookNum,jdbcType=VARCHAR},
-        #{name,jdbcType=VARCHAR},
-        #{img,jdbcType=VARCHAR},
-        #{price,jdbcType=DECIMAL},
-        #{totalPrice,jdbcType=DECIMAL},
-        #{totalCount,jdbcType=INTEGER},
-        #{endDate,jdbcType=TIMESTAMP},
-        #{productId,jdbcType=INTEGER},
-        #{status,jdbcType=TINYINT},
-        <if test="remark != null and remark != ''" >
-            #{remark,jdbcType=VARCHAR}
-        </if>
+        #{id},
+        #{bookNum},
+        #{name},
+        #{img},
+        #{price},
+        #{totalPrice},
+        #{totalCount},
+        #{productId},
     </trim>
   </insert>
-  
-  <!--更新--> 
+
+  <!--更新-->
   <update id="update" parameterType="bookItem" >
       update bookItem
       <set>
           <if test="bookNum != null and bookNum != ''" >
-              bookNum = #{bookNum,jdbcType=VARCHAR},
+              bookNum = #{bookNum},
           </if>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="img != null and img != ''" >
-              img = #{img,jdbcType=VARCHAR},
+              img = #{img},
           </if>
           <if test="price != null" >
-              price = #{price,jdbcType=DECIMAL},
+              price = #{price},
           </if>
           <if test="totalPrice != null" >
-              totalPrice = #{totalPrice,jdbcType=DECIMAL},
+              totalPrice = #{totalPrice},
           </if>
           <if test="totalCount != null" >
-              totalCount = #{totalCount,jdbcType=INTEGER},
-          </if>
-          <if test="endDate != null" >
-              endDate = #{endDate,jdbcType=TIMESTAMP},
+              totalCount = #{totalCount},
           </if>
           <if test="productId != null" >
-              productId = #{productId,jdbcType=INTEGER},
-          </if>
-          <if test="status != null" >
-              status = #{status,jdbcType=TINYINT},
-          </if>
-          <if test="remark != null and remark != ''" >
-              remark = #{remark,jdbcType=VARCHAR}
+              productId = #{productId},
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

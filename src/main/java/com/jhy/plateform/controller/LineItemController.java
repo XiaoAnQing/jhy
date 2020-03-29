@@ -1,5 +1,6 @@
 package com.jhy.plateform.controller;
 
+import com.jhy.plateform.service.LineService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ import com.jhy.plateform.service.LineItemService;
 @RequestMapping("/lineItems")
 @ControllerAnno(addUI = "/lineItem/save", detailUI = "/lineItem/detail", editUI = "/lineItem/save", listUI = "/lineItem/list")
 public class LineItemController extends BaseController<LineItem,LineItemQuery>{
-	
+
 	@Autowired
 	public void setLineItemService(LineItemService lineItemService) {
 		this.baseService = lineItemService;

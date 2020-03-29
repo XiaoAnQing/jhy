@@ -3,17 +3,17 @@
 <mapper namespace="com.jhy.plateform.dao.FileInfoMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.FileInfo" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="path" property="path" jdbcType="VARCHAR" />
-      <result column="printCount" property="printCount" jdbcType="TINYINT" />
-      <result column="page" property="page" jdbcType="TINYINT" />
-      <result column="label" property="label" jdbcType="VARCHAR" />
-      <result column="money" property="money" jdbcType="INTEGER" />
-      <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
-      <result column="modifyDate" property="modifyDate" jdbcType="TIMESTAMP" />
-      <result column="userId" property="userId" jdbcType="INTEGER" />
-      <result column="userName" property="userName" jdbcType="VARCHAR" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="path" property="path"/>
+      <result column="printCount" property="printCount"/>
+      <result column="page" property="page"/>
+      <result column="label" property="label"/>
+      <result column="money" property="money"/>
+      <result column="createDate" property="createDate"/>
+      <result column="modifyDate" property="modifyDate"/>
+      <result column="userId" property="userId"/>
+      <result column="userName" property="userName"/>
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -32,7 +32,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from fileInfo where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from fileInfo where id = #{id}
   </select>
   
   
@@ -42,8 +42,8 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and (name like #{likeKeyWords,jdbcType=VARCHAR}
-            or label like #{likeKeyWords,jdbcType=VARCHAR})
+            and (name like #{likeKeyWords}
+            or label like #{likeKeyWords})
          </if>
       </trim>
       order by id DESC
@@ -52,7 +52,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from fileInfo where id = #{id,jdbcType=INTEGER}
+      delete from fileInfo where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -85,22 +85,22 @@
         userName
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{name,jdbcType=VARCHAR},
-        #{path,jdbcType=VARCHAR},
+        #{name},
+        #{path},
         <if test="printCount != null" >
-            #{printCount,jdbcType=TINYINT},
+            #{printCount},
         </if>
-        #{page,jdbcType=TINYINT},
+        #{page},
         <if test="label != null and label != ''" >
-            #{label,jdbcType=VARCHAR},
+            #{label},
         </if>
         <if test="money != null and money != ''" >
-            #{money,jdbcType=INTEGER},
+            #{money},
         </if>
-        #{createDate,jdbcType=TIMESTAMP},
-        #{modifyDate,jdbcType=TIMESTAMP},
-        #{userId,jdbcType=INTEGER},
-        #{userName,jdbcType=VARCHAR}
+        #{createDate},
+        #{modifyDate},
+        #{userId},
+        #{userName}
     </trim>
   </insert>
   
@@ -109,22 +109,22 @@
       update fileInfo
       <set>
           <if test="printCount != null" >
-              printCount = #{printCount,jdbcType=TINYINT},
+              printCount = #{printCount},
           </if>
           <if test="page != null" >
-              page = #{page,jdbcType=TINYINT},
+              page = #{page},
           </if>
           <if test="label != null and label != ''" >
-              label = #{label,jdbcType=VARCHAR},
+              label = #{label},
           </if>
           <if test="money != null" >
-              money = #{money,jdbcType=INTEGER},
+              money = #{money},
           </if>
           <if test="modifyDate != null" >
-              modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
+              modifyDate = #{modifyDate},
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

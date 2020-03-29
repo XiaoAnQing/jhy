@@ -6,6 +6,8 @@ public class MaterialQuery extends BaseQuery{
 
 	private String name;
 
+	private Integer supplierId;
+
 	public String getName() {
 		return name;
 	}
@@ -20,6 +22,14 @@ public class MaterialQuery extends BaseQuery{
 
 	public void setMaterialTypeId(Integer materialTypeId) {
 		this.materialTypeId = materialTypeId;
+	}
+
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
 	}
 
 	@Override

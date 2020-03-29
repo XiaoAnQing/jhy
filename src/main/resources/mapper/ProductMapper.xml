@@ -3,21 +3,21 @@
 <mapper namespace="com.jhy.plateform.dao.ProductMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Product" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="title" property="title" jdbcType="VARCHAR" />
-      <result column="detailImg" property="detailImg" jdbcType="VARCHAR" />
-      <result column="customerNum" property="customerNum" jdbcType="VARCHAR" />
-      <result column="num" property="num" jdbcType="VARCHAR" />
-      <result column="oriPrice" property="oriPrice" jdbcType="DECIMAL" />
-      <result column="price" property="price" jdbcType="DECIMAL" />
-      <result column="splenicCuff" property="splenicCuff" jdbcType="VARCHAR" />
-      <result column="glasses" property="glasses" jdbcType="VARCHAR" />
-      <result column="electroplatingColour" property="electroplatingColour" jdbcType="VARCHAR" />
-      <result column="typeName" property="typeName" jdbcType="VARCHAR" />
-      <result column="productTypeId" property="productTypeId" jdbcType="INTEGER" />
-      <result column="customerId" property="customerId" jdbcType="INTEGER" />
-      <result column="userId" property="userId" jdbcType="INTEGER" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="title" property="title"/>
+      <result column="detailImg" property="detailImg"/>
+      <result column="customerNum" property="customerNum"/>
+      <result column="num" property="num"/>
+      <result column="oriPrice" property="oriPrice"/>
+      <result column="price" property="price"/>
+      <result column="splenicCuff" property="splenicCuff"/>
+      <result column="glasses" property="glasses"/>
+      <result column="electroplatingColour" property="electroplatingColour"/>
+      <result column="typeName" property="typeName"/>
+      <result column="productTypeId" property="productTypeId"/>
+      <result column="customerId" property="customerId"/>
+      <result column="userId" property="userId"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -40,7 +40,7 @@
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from product where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from product where id = #{id}
   </select>
   
   
@@ -50,7 +50,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
@@ -59,7 +59,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from product where id = #{id,jdbcType=INTEGER}
+      delete from product where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -93,22 +93,22 @@
         </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR},
-        #{title,jdbcType=VARCHAR},
-        #{detailImg,jdbcType=VARCHAR},
-        #{customerNum,jdbcType=VARCHAR},
-        #{num,jdbcType=VARCHAR},
-        #{oriPrice,jdbcType=DECIMAL},
-        #{price,jdbcType=DECIMAL},
-        #{splenicCuff,jdbcType=VARCHAR},
-        #{glasses,jdbcType=VARCHAR},
-        #{electroplatingColour,jdbcType=VARCHAR},
-        #{typeName,jdbcType=VARCHAR},
-        #{productTypeId,jdbcType=INTEGER},
-        #{customerId,jdbcType=INTEGER},
+        #{id},
+        #{name},
+        #{title},
+        #{detailImg},
+        #{customerNum},
+        #{num},
+        #{oriPrice},
+        #{price},
+        #{splenicCuff},
+        #{glasses},
+        #{electroplatingColour},
+        #{typeName},
+        #{productTypeId},
+        #{customerId},
         <if test="userId != null" >
-            #{userId,jdbcType=INTEGER}
+            #{userId}
         </if>
     </trim>
   </insert>
@@ -118,49 +118,49 @@
       update product
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="title != null and title != ''" >
-              title = #{title,jdbcType=VARCHAR},
+              title = #{title},
           </if>
           <if test="detailImg != null and detailImg != ''" >
-              detailImg = #{detailImg,jdbcType=VARCHAR},
+              detailImg = #{detailImg},
           </if>
           <if test="customerNum != null and customerNum != ''" >
-              customerNum = #{customerNum,jdbcType=VARCHAR},
+              customerNum = #{customerNum},
           </if>
           <if test="num != null and num != ''" >
-              num = #{num,jdbcType=VARCHAR},
+              num = #{num},
           </if>
           <if test="oriPrice != null" >
-              oriPrice = #{oriPrice,jdbcType=DECIMAL},
+              oriPrice = #{oriPrice},
           </if>
           <if test="price != null" >
-              price = #{price,jdbcType=DECIMAL},
+              price = #{price},
           </if>
           <if test="splenicCuff != null and splenicCuff != ''" >
-              splenicCuff = #{splenicCuff,jdbcType=VARCHAR},
+              splenicCuff = #{splenicCuff},
           </if>
           <if test="glasses != null and glasses != ''" >
-              glasses = #{glasses,jdbcType=VARCHAR},
+              glasses = #{glasses},
           </if>
           <if test="electroplatingColour != null and electroplatingColour != ''" >
-              electroplatingColour = #{electroplatingColour,jdbcType=VARCHAR},
+              electroplatingColour = #{electroplatingColour},
           </if>
           <if test="typeName != null and typeName != ''" >
-              typeName = #{typeName,jdbcType=VARCHAR},
+              typeName = #{typeName},
           </if>
           <if test="productTypeId != null" >
-              productTypeId = #{productTypeId,jdbcType=INTEGER},
+              productTypeId = #{productTypeId},
           </if>
           <if test="customerId != null" >
-              customerId = #{customerId,jdbcType=INTEGER},
+              customerId = #{customerId},
           </if>
           <if test="userId != null" >
-              userId = #{userId,jdbcType=INTEGER}
+              userId = #{userId}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

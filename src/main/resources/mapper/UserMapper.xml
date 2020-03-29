@@ -3,12 +3,12 @@
 <mapper namespace="com.jhy.plateform.dao.UserMapper">
 
   <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.User" >
-      <id column="id" property="id" jdbcType="INTEGER" />
-      <result column="name" property="name" jdbcType="VARCHAR" />
-      <result column="email" property="email" jdbcType="VARCHAR" />
-      <result column="loginName" property="loginName" jdbcType="VARCHAR" />
-      <result column="password" property="password" jdbcType="VARCHAR" />
-      <result column="status" property="status" jdbcType="TINYINT" />
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="email" property="email"/>
+      <result column="loginName" property="loginName"/>
+      <result column="password" property="password"/>
+      <result column="status" property="status"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -32,7 +32,7 @@
 
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from t_user where id = #{id,jdbcType=INTEGER}
+      select <include refid="Base_Column_List" /> from t_user where id = #{id}
   </select>
   
   
@@ -42,7 +42,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords,jdbcType=VARCHAR}
+            and name like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC
@@ -51,7 +51,7 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from t_user where id = #{id,jdbcType=INTEGER}
+      delete from t_user where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
@@ -74,12 +74,12 @@
         status
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id,jdbcType=INTEGER},
-        #{name,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR},
-        #{loginName,jdbcType=VARCHAR},
-        #{password,jdbcType=VARCHAR},
-        #{status,jdbcType=TINYINT}
+        #{id},
+        #{name},
+        #{email},
+        #{loginName},
+        #{password},
+        #{status}
     </trim>
   </insert>
   
@@ -88,22 +88,22 @@
       update user
       <set>
           <if test="name != null and name != ''" >
-              name = #{name,jdbcType=VARCHAR},
+              name = #{name},
           </if>
           <if test="email != null and email != ''" >
-              email = #{email,jdbcType=VARCHAR},
+              email = #{email},
           </if>
           <if test="loginName != null and loginName != ''" >
-              loginName = #{loginName,jdbcType=VARCHAR},
+              loginName = #{loginName},
           </if>
           <if test="password != null and password != ''" >
-              password = #{password,jdbcType=VARCHAR},
+              password = #{password},
           </if>
           <if test="status != null" >
-              status = #{status,jdbcType=TINYINT}
+              status = #{status}
           </if>
       </set>
-      where id = #{id,jdbcType=INTEGER}
+      where id = #{id}
   </update>
 	
 </mapper>

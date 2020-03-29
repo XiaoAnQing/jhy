@@ -38,19 +38,19 @@ public class Station extends BaseDomain {
         this.icon = icon;
     }
 
-    public Integer getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(Integer mangerId) {
-        this.managerId = managerId;
-    }
-
     public String getPosition() {
         return position;
     }
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public Integer getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
     }
 }
