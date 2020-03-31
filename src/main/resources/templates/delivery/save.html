@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <div th:replace="~{common/head::common-head}"/>
+  <script th:src="@{/static/bower_components/table/bootstrap-table.js}"></script>
+  <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
+  <script th:src="@{/static/dist/js/request.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+  <style type="text/css">
+    #delivery_item_table_body .form-group{
+      margin-right: 0px;
+      margin-left: 0px;
+      margin-bottom: 0px;
+    }
+  </style>
+  <title>添加送货单</title>
+</head>
+
+
+
+<body class="hold-transition skin-blue fixed sidebar-mini">
+<div class="wrapper">
+  <header th:replace="~{common/top::common-top}"/>
+
+  <aside th:replace="~{common/left::common-left}"/>
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1 th:text="${#strings.isEmpty(id) ? '添加送货单':'编辑送货单'}"></h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+        <li><a href="#">送货单管理</a></li>
+        <li class="active">列表</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- right column -->
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <!-- form start -->
+            <form class="form-horizontal" th:action="@{/deliveries/}+${#strings.isEmpty(delivery.id)?'':delivery.id}" th:method="post" th:object="${delivery}" id="form_create_delivery">
+              <input type="hidden" name="id" th:value="*{id}">
+              <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+
+              <div class="box-body">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="price" class="col-sm-2 control-label">总金额</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="price" name="price" th:value="*{price}" readonly="readonly"  class="form-control" placeholder="总金额" data-bv-notempty="true"/>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="purchaseNum" class="col-sm-2 control-label">采购订单</label>
+                    <div class="col-sm-10">
+                      <select class="form-control select2" style="width: 100%;" id="purchaseNum" name="purchaseNum" data-bv-notempty="true"></select>
+                    </div>
+                  </div>
+                </div>
+
+                <!--添加送货单明细-->
+                <div class="col-md-12">
+                  <div class="col-md-6 ">
+                    <div class="form-group">
+                      <button type="button" id="add_delivery_item" class="btn btn-success btn-flat">添加明细</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <table id="delivery_item_table" data-toggle="table">
+                    <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>单价</th>
+                      <th>数量</th>
+                      <th>总价</th>
+                      <th>操 作 </th>
+                    </tr>
+                    </thead>
+                    <tbody id="delivery_item_table_body">
+                    <tr>
+                      <td>
+                        <div class="form-group">
+                          <input type="text" name="purchaseItemName" readonly="readonly" class="form-control" placeholder="名称" data-bv-notempty="true" />
+                          <input type="hidden" name="id" />
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="form-group">
+                          <input type="text" name="purchaseItemPrice" readonly="readonly" class="form-control" placeholder="单价" data-bv-notempty="true" />
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <input type="text" name="totalCount" class="form-control" placeholder="数量" data-bv-notempty="true" />
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <input type="text" name="purchaseItemTotalPrice" readonly="readonly" class="form-control" placeholder="总价" data-bv-notempty="true" />
+                        </div>
+                      </td>
+                      <td><button type="button" id="delete_delivery_item" class="btn btn-danger btn-flat">删除</button></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="box-footer">
+                <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer th:replace="~{common/footer::common-footer}">
+    <aside th:replace="~{common/setting::common-setting}">
+    </aside>
+  </footer>
+  </aside>
+  </header>
+</div>
+<script type="text/javascript">
+  var $purchaseItemTable;
+  function calTotalPrice(){
+    var $itemTotalPriceInput = $("#delivery_item_table_body > tr input[name=purchaseItemTotalPrice]");
+    var totalPrice=0;
+    $.each($itemTotalPriceInput,function(index,item){
+      if(parseFloat($(item).val())){
+        totalPrice = totalPrice+parseFloat($(item).val());
+      }
+    })
+    $("input[name=price]").val(totalPrice);
+  }
+  $(function(){
+
+    //监听采购订单改变事件
+    $("#purchaseNum").on("change",function(){
+      //清除
+      $.each($("#delivery_item_table_body > tr"),function (index,item) {
+        var $item = $(item);
+        //重置数据
+        $item.find("input[name=purchaseItemName]").val("");
+        $item.find("input[name=purchaseItemPrice]").val("");
+        $item.find("input[name=totalCount]").val("");
+        $item.find("input[name=purchaseItemTotalPrice]").val("");
+        $item.find("input[name=id]").val("");
+      });
+    });
+
+
+    $("#purchaseNum").select2({
+      placeholder:'请选择采购订单',//默认文字提示
+      tags: false,//允许手动添加
+      allowClear: true,//允许清空
+      ajax: {
+        url: '[[@{/}]]purchases/pass',
+        type:'get',
+        dataType: 'json',
+        data: function (params) {
+          return {name: params.term || ''};
+        },
+        processResults: function (data) {
+          var array = new Array();
+          data = data.data;
+          if (data) {
+            for (var i = 0; i < data.length; i++) {
+              array.push({id: data[i].num, text: data[i].num});
+            }
+          }
+          var result = new Object();
+          result.results = array;
+          return result;
+        }
+      }
+    });
+
+    //监听数量的change事件
+    $("#delivery_item_table_body > tr:first input[name=totalCount]").on("change",function(e){
+
+      var $it = $(this);
+      var $tr = $it.closest("tr");
+      if($tr.find("input[name=id]").val()){
+
+        var max = parseInt($tr.data("max"));
+        var count = parseInt($it.val());
+        if(count>=max){
+          $it.val(max);
+          count=max;
+        }
+
+        var price = parseFloat($tr.find("input[name=purchaseItemPrice]").val());
+        var $totalPriceInput = $tr.find("input[name=purchaseItemTotalPrice]");
+        if(count){
+          if(count==0){
+            $it.val(1);
+            $totalPriceInput.val(price);
+            //修改总价
+            calTotalPrice();
+          }else{
+            $totalPriceInput.val(price*count);
+            //修改总价
+            calTotalPrice();
+          }
+        }else{
+          $it.val(1);
+          $totalPriceInput.val(price);
+          //修改总价
+          calTotalPrice();
+        }
+      }
+    });
+
+    $("#add_delivery_item").on("click",function(){
+      var $firstTr = $("#delivery_item_table_body > tr:first");
+      var $newTr = $firstTr.clone(true);//true:事件也复制
+      var $itemTableBody = $("#delivery_item_table_body");
+
+      //重置数据
+      $newTr.find("input[name=purchaseItemName]").val("");
+      $newTr.find("input[name=purchaseItemPrice]").val("");
+      $newTr.find("input[name=totalCount]").val("");
+      $newTr.find("input[name=purchaseItemTotalPrice]").val("");
+      $newTr.find("input[name=id]").val("");
+      $newTr.appendTo($itemTableBody);
+    });
+    $("input[name=purchaseItemName]").on("click",function(){
+      //判断需要选择了用户
+      var purchaseNum = $("#purchaseNum option:checked").val();
+      if(purchaseNum){
+        $("#modal_purchase_item").modal('show');
+      }else{
+        alert("请选择采购订单");
+      }
+    });
+    $("#delete_delivery_item").on("click",function(){
+      //如果是最后一个则不能删除
+      if($("#delivery_item_table_body >tr").length!=1){
+        var $it = $(this);
+        var $tr = $it.closest("tr");
+        $tr.remove();  //自己删除自己
+      }else{
+        alert("不能删除最后一个");
+      }
+    });
+
+    //modal_purchase_item显示会触发该事件
+    $('#modal_purchase_item').on('show.bs.modal', function (e) {
+
+      //第一次的时候才需要加载名称信息
+      if($purchaseItemTable==null){
+        var queryUrl = '[[@{/}]]/purchaseItems';
+        $purchaseItemTable = $('#purchaseItem_table').bootstrapTable({
+          url: queryUrl,            //请求后台的URL（*）
+          method: 'GET',            //请求方式（*）
+          toolbar: '#purchaseItemToolbar',        //工具按钮用哪个容器
+          striped: true,            //是否显示行间隔色
+          cache: false,             //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+          pagination: true,           //是否显示分页（*）
+          sortable: true,           //是否启用排序
+          sortOrder: "asc",           //排序方式
+
+          sidePagination: "server",       //分页方式：client用户端分页，server服务端分页（*）
+
+          pageNumber: 1,            //初始化加载第一页，默认第一页,并记录
+          pageSize: 10,             //每页的记录行数（*）
+          pageList: [10, 25, 50, 100],    //可供选择的每页的行数（*）
+
+          clickToSelect: true,        //是否启用点击选中行
+          uniqueId: "id",           //每一行的唯一标识，一般为主键列
+
+          //得到查询的参数
+          queryParams : function (params) {
+            var temp = {
+              purchaseNum : $("#purchaseNum option:checked").val(),
+              pageNum: (params.offset / params.limit) + 1,   //页码
+              pageSize: params.limit             //每页显示多条
+            };
+            return temp;
+          },
+
+
+          columns: [{
+            checkbox: true,
+            visible: true                  //是否显示复选框
+          },{
+            field: 'name',
+            title: '名称'
+          },{
+            field: 'price',
+            title: '单价'
+          },{
+            field: 'totalPrice',
+            title: '总价'
+          },{
+            field: 'totalCount',
+            title: '总数'
+          },{
+            field: 'leftCount',
+            title: '待送货'
+          },{
+            field: 'status',
+            title: '状态'
+          }],
+          responseHandler: function (res) {
+            return {
+              "total": res.total,//总页数
+              "rows": res.data   //数据
+            };
+          }
+        });
+      }else{
+        $purchaseItemTable.bootstrapTable('refresh');
+      }
+    });
+
+    //监听
+    $("#btn_batch_delivery").on("click",function(){
+      //获取table选中的
+      var purchaseItems = $purchaseItemTable.bootstrapTable('getAllSelections');
+      //关闭模态对话框
+      $("#modal_purchase_item").modal('hide');
+      if(purchaseItems.length==0){
+        return;
+      }
+      $.each(purchaseItems,function(index,item){
+        if(item.leftCount!=0){
+          //判断之前存不存在
+          var $tempInput = $("#delivery_item_table_body > tr input[value='"+item.id+"']");
+          if($tempInput.length==1){
+            var $totalCountInput = $tempInput.closest("tr").find("input[name=totalCount]");
+            //存在的只要修改数量
+            //判断数量
+            if(item.leftCount>parseInt($totalCountInput.val())){
+              $totalCountInput.val(parseInt($totalCountInput.val())+1);
+            }
+          }else{
+            //添加到
+            var $firstTr = $("#delivery_item_table_body > tr:first");
+            var $newTr = $firstTr.clone(true);//true:事件也复制
+            var $itemTableBody = $("#delivery_item_table_body");
+            $newTr.appendTo($itemTableBody);
+
+            $newTr.data("max",item.leftCount);
+            //填充数据
+            $newTr.find("input[name=purchaseItemName]").val(item.name);
+            $newTr.find("input[name=purchaseItemPrice]").val(item.price);
+            $newTr.find("input[name=totalCount]").val("1");
+            $newTr.find("input[name=purchaseItemTotalPrice]").val(item.price);
+            $newTr.find("input[name=id]").val(item.id);
+          }
+        }
+      });
+
+      //删掉无用行
+      var $trs =  $("#delivery_item_table_body > tr");
+      $.each($trs,function(index,item){
+        if(!$(item).find("input[name=id]").val()){
+          $(item).remove();
+        }
+      });
+    });
+
+    //监听表单提交事件
+    $("#form_create_delivery").on("submit",function(){
+      //修改请求参数名字
+      var $trs = $("#delivery_item_table_body > tr");
+      $.each($trs,function(index,item){
+        $(item).find("input[name=id]").attr("name","deliveryItems["+index+"].materialId");
+        $(item).find("input[name=totalCount]").attr("name","deliveryItems["+index+"].totalCount");
+      });
+      return true;
+    });
+  });
+</script>
+<!-- 选择名称对话框 -->
+<div id="modal_purchase_item" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myLargeModalLabel">请选择名称</h4>
+      </div>
+      <div class="modal-body">
+        <div id="purchaseItemToolbar">
+          <button id="btn_batch_delivery" type="button" class="btn bg-olive btn-flat">批量下单</button>
+        </div>
+        <table id="purchaseItem_table"></table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

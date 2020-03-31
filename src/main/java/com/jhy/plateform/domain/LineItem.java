@@ -28,6 +28,9 @@ public class LineItem extends BaseDomain {
      //工序
     private Integer stationId;
 
+    private String command;   //命令
+    private String input;     //原材料
+
     public String getName() {
         return name;
     }
@@ -82,5 +85,21 @@ public class LineItem extends BaseDomain {
 
     public void setStationId(Integer stationId) {
         this.stationId = stationId;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
     }
 }

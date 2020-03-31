@@ -1,5 +1,6 @@
 package com.jhy.plateform.controller;
 
+import com.jhy.plateform.utils.JsonModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,10 @@ import com.jhy.plateform.domain.Line;
 import com.jhy.plateform.exception.KPException;
 import com.jhy.plateform.query.LineQuery;
 import com.jhy.plateform.service.LineService;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/lines")
@@ -32,5 +37,15 @@ public class LineController extends BaseController<Line,LineQuery>{
 
 	@Override
 	protected void beforeDelete(String[] ids) throws KPException {
+	}
+
+	@RequestMapping(value="summary",method= RequestMethod.GET)
+	@ResponseBody
+	public JsonModel summary(){
+		JsonModel jsonModel = new JsonModel();
+		List<Line> lines = ((LineService)this.baseService).findSummary();
+		jsonModel.setSuccess(true);
+		jsonModel.setData(lines);
+		return jsonModel;
 	}
 }

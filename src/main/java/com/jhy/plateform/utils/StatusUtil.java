@@ -26,4 +26,8 @@ public class StatusUtil {
     public static final byte STATUS_PURCHASE_FINISHED=4;     //已完成
     public static final byte STATUS_PURCHASE_INVALIDATED=5;  //无效[终止]
 
+    //送货单状态
+    public static final byte STATUS_DELIVERY_UNFINISH=0;      //未完全入库
+    public static final byte STATUS_DELIVERY_FINISH=1;        //已入库
+
 }

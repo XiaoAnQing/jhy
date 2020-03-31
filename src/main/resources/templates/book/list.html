@@ -166,7 +166,8 @@
                    title: '备注'
                },{
                    field: 'status',
-                   title: '状态'
+                   title: '状态',
+                   formatter:statusFormatter
                }],
 
 			  onLoadError: function () {
@@ -180,5 +181,9 @@
 			  }
 		  });
 	  });
+
+      function statusFormatter(value,row,index){
+        return cache.getName(3,value);
+      }
   </script>
 </html>

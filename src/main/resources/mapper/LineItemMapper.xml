@@ -11,6 +11,8 @@
       <result column="orderNum" property="orderNum"/>
       <result column="lineId" property="lineId"/>
       <result column="stationId" property="stationId"/>
+      <result column="command" property="command"/>
+      <result column="input" property="input"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -21,7 +23,9 @@
       position,
       orderNum,
       lineId,
-      stationId
+      stationId,
+      command,
+      input
   </sql>
   
   <!--根据Id查询-->
@@ -60,24 +64,34 @@
   <insert id="add" parameterType="com.jhy.plateform.domain.LineItem" >
     insert into lineItem
     <trim prefix="(" suffix=")" suffixOverrides="," >
-        id,
         name,
         icon,
         mangerId,
         position,
         orderNum,
         lineId,
-        stationId
+        stationId,
+        <if test="command != null and command !=''">
+        command,
+        </if>
+        <if test="input != null and input !=''">
+        input
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-        #{id},
         #{name},
         #{icon},
         #{mangerId},
         #{position},
         #{orderNum},
         #{lineId},
-        #{stationId}
+        #{stationId},
+        <if test="command != null and command !=''">
+            #{command},
+        </if>
+        <if test="input != null and input !=''">
+            #{input}
+        </if>
     </trim>
   </insert>
   
@@ -104,7 +118,13 @@
               lineId = #{lineId},
           </if>
           <if test="stationId != null" >
-              stationId = #{stationId}
+              stationId = #{stationId},
+          </if>
+          <if test="command != null" >
+              command = #{command},
+          </if>
+          <if test="input != null" >
+              input = #{input}
           </if>
       </set>
       where id = #{id}

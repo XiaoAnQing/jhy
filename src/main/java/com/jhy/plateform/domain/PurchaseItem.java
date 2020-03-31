@@ -26,7 +26,10 @@ public class PurchaseItem extends BaseDomain {
     //单价
     private BigDecimal price;
      //总数量
-    private Integer totalCount;                                    
+    private Integer totalCount;
+    //剩余多少
+    private Integer leftCount;
+
     //结束日期
     private Date endDate;
 
@@ -84,5 +87,13 @@ public class PurchaseItem extends BaseDomain {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Integer getLeftCount() {
+        return leftCount;
+    }
+
+    public void setLeftCount(Integer leftCount) {
+        this.leftCount = leftCount;
     }
 }

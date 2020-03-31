@@ -8,11 +8,18 @@ import com.jhy.plateform.service.LineService;
 import com.jhy.plateform.service.base.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Service
 public class LineServiceImpl extends BaseServiceImpl<Line, LineQuery> implements LineService{
 
 	@Autowired
 	public void setLineMapper(LineMapper lineMapper){
 		this.daoMapper = lineMapper;
+	}
+
+	@Override
+	public List<Line> findSummary() {
+		return ((LineMapper)this.daoMapper).findSummary();
 	}
 }

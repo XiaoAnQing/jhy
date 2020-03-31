@@ -2,11 +2,11 @@ package com.jhy.plateform.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.jhy.plateform.anno.ControllerAnno;
-import com.jhy.plateform.domain.Purchase;
+import com.jhy.plateform.domain.Delivery;
 import com.jhy.plateform.domain.User;
 import com.jhy.plateform.exception.KPException;
-import com.jhy.plateform.query.PurchaseQuery;
-import com.jhy.plateform.service.PurchaseService;
+import com.jhy.plateform.query.DeliveryQuery;
+import com.jhy.plateform.service.DeliveryService;
 import com.jhy.plateform.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,29 +23,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/purchases")
-@ControllerAnno(addUI = "/purchase/save", detailUI = "/purchase/detail", editUI = "/purchase/save", listUI = "/purchase/list")
-public class PurchaseController{
+@RequestMapping("/deliveries")
+@ControllerAnno(addUI = "/delivery/save", detailUI = "/delivery/detail", editUI = "/delivery/save", listUI = "/delivery/list")
+public class DeliveryController{
 
 	@Autowired
-	PurchaseService purchaseService;
+	DeliveryService deliveryService;
 
 	/**
 	 * 分页查询[返回JSON]
-	 * @param purchaseQuery
+	 * @param deliveryQuery
 	 * @param request
 	 * @return
 	 * @throws KPException
 	 */
 	@RequestMapping(value="", method= RequestMethod.GET, headers="X-Requested-With=XMLHttpRequest")
 	public @ResponseBody
-	Map<String,Object> list(PurchaseQuery purchaseQuery, HttpServletRequest request) throws KPException{
-		Map<String,Object> result;
-		result = new HashMap<String,Object>();
-		PageInfo<Purchase> results =null;
-		results = purchaseService.findBySelective(purchaseQuery);
+	Map<String,Object> list(DeliveryQuery deliveryQuery, HttpServletRequest request) throws KPException{
+		Map<String,Object> result = new HashMap<String,Object>();
+		PageInfo<Delivery> results = deliveryService.findBySelective(deliveryQuery);
 		result.put("success", true);
-		result.put("msg","查询采购成功");
+		result.put("msg","查询送货单成功");
 		result.put("total", results.getTotal());
 		result.put("data", results.getList());
 		return result;
@@ -53,28 +51,9 @@ public class PurchaseController{
 
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public String list(HttpServletRequest request,ModelMap modelMap) throws KPException {
-		return "/purchase/list";
+		return "/delivery/list";
 	}
 
-	/**
-	 * 获取审核通过的采购订单
-	 * @param purchaseQuery
-	 * @param request
-	 * @return
-	 * @throws KPException
-	 */
-	@RequestMapping(value="pass", method= RequestMethod.GET, headers="X-Requested-With=XMLHttpRequest")
-	public @ResponseBody Map<String,Object> listPass(PurchaseQuery purchaseQuery, HttpServletRequest request) throws KPException{
-		Map<String,Object> result= new HashMap<String,Object>();
-		purchaseQuery.setStatus(StatusUtil.STATUS_PURCHASE_PASSED);
-		PageInfo<Purchase> results = purchaseService.findBySelective(purchaseQuery);
-
-		result.put("success", true);
-		result.put("msg","查询采购订单成功");
-		result.put("total", results.getTotal());
-		result.put("data", results.getList());
-		return result;
-	}
 
 
 
@@ -87,8 +66,8 @@ public class PurchaseController{
 	 */
 	@RequestMapping(value={"/new"}, method={RequestMethod.GET})
 	public String addUI(ModelMap modelMap) throws KPException {
-		modelMap.addAttribute(new Purchase());
-		return "/purchase/save";
+		modelMap.addAttribute(new Delivery());
+		return "/delivery/save";
 	}
 
 
@@ -100,15 +79,15 @@ public class PurchaseController{
 	 * @throws KPException
 	 */
 	@RequestMapping(value="/",method = { RequestMethod.POST })
-	public String add(Purchase t,ModelMap modelMap) throws KPException {
+	public String add(Delivery t,ModelMap modelMap) throws KPException {
 		HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
 		User user = (User) request.getSession().getAttribute(ConstantUtil.SESSION_KEY);
 		t.setNum(StringUtil.formateDate(DateUtil.getCurrentDate(),"yyyyMMddHHmmss")+user.getId());
 		//设置跟单信息
 		t.setUserId(user.getId());
 		t.setUserName(user.getName());
-		purchaseService.add(t);
-		return "redirect:/purchases";
+		deliveryService.add(t);
+		return "redirect:/deliveries";
 	}
 
 	/**
@@ -125,10 +104,10 @@ public class PurchaseController{
 			int result;
 			if (id.length > 1) {
 				// 批量删除
-				result = this.purchaseService.deleteByIds(id);
+				result = this.deliveryService.deleteByIds(id);
 			} else {
 				//单个删除
-				result = this.purchaseService.deleteById(ids);
+				result = this.deliveryService.deleteById(ids);
 			}
 			if(result==0){
 				jsonModel.setSuccess(false);
@@ -139,7 +118,7 @@ public class PurchaseController{
 			}
 		} catch (Exception e) {
 			jsonModel.setSuccess(false);
-			jsonModel.setMsg("删除采购失败,请重新刷新数据再删除");
+			jsonModel.setMsg("删除送货单失败,请重新刷新数据再删除");
 		}
 		return jsonModel;
 	}

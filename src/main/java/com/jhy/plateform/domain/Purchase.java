@@ -1,4 +1,5 @@
 package com.jhy.plateform.domain;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
 import java.math.BigDecimal;
@@ -19,9 +20,11 @@ import java.util.List;
 public class Purchase extends BaseDomain {
     //编号
     private String num;                                      
-    //下单时间]                               
+    //下单时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
-    //交货日期]                               
+    //交货日期
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;                                        
      //供应商
     private Integer supplierId;                                    

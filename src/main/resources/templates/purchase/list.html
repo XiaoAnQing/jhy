@@ -135,43 +135,41 @@
 				  return temp;
 			  },
 
-        columns: [{
-            checkbox: true,  
-            visible: true                  //是否显示复选框  
-        },{
-            field: 'num',
-            title: '编号'
-        },{
-            field: 'createDate',
-            title: '下单时间'
-        },{
-            field: 'endDate',
-            title: '交货日期'
-        },{
-            field: 'supplierId',
-            title: '供应商'
-        },{
-            field: 'supplierName',
-            title: '供应商'
-        },{
-            field: 'price',
-            title: '总金额'
-        },{
-            field: 'payInfo',
-            title: '支付信息'
-        },{
-            field: 'evidenceImg',
-            title: '凭据图片'
-        },{
-            field: 'userName',
-            title: '跟单'
-        },{
-            field: 'status',
-            title: '状态'
-        },{
-            field: 'remark',
-            title: '备注'
-        }],
+              columns: [{
+                checkbox: true,
+                visible: true                  //是否显示复选框
+              },{
+                field: 'num',
+                title: '编号'
+              },{
+                field: 'createDate',
+                title: '下单时间'
+              },{
+                field: 'endDate',
+                title: '交货日期'
+              },{
+                field: 'supplierName',
+                title: '供应商'
+              },{
+                field: 'price',
+                title: '总金额'
+              },{
+                field: 'payInfo',
+                title: '支付信息'
+              },{
+                field: 'evidenceImg',
+                title: '凭据图片'
+              },{
+                field: 'userName',
+                title: '跟单'
+              },{
+                field: 'status',
+                title: '状态',
+                formatter:statusFormatter
+              },{
+                field: 'remark',
+                title: '备注'
+              }],
            
 			  onLoadError: function () {
 				  //加载失败触发
@@ -184,5 +182,9 @@
 			  }
 		  });
 	  });
+
+      function statusFormatter(value,row,index){
+        return cache.getName(4,value);
+      }
   </script>
 </html>

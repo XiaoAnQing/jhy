@@ -11,7 +11,7 @@
 
       <div class="content-wrapper">
         <section class="content-header">
-          <h1>采购明细管理<small>查询</small>
+          <h1>送货明细管理<small>查询\添加\修改</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -50,11 +50,11 @@
                   </div>
 
                   <div id="toolbar">
-                    <a th:href="@{/purchaseItems/new}" type="button" class="btn bg-maroon btn-flat">添加</a>
+                    <a th:href="@{/deliveryItems/new}" type="button" class="btn bg-maroon btn-flat">添加</a>
                     <button type="button" data-ope="delete" class="btn bg-olive btn-flat">删除</button>
                     <button type="button" data-ope="edit" class="btn bg-orange btn-flat">编辑</button>
                   </div>
-                  <table id="purchaseItem_table"></table>
+                  <table id="deliveryItem_table"></table>
                 </div>
               </div>
             </div>
@@ -93,7 +93,7 @@
 			  var ope = $(this).data("ope");
 			  if("delete"==ope){
 				  var ids = idArray.join(",");
-				  request.ajax("[[@{/}]]/purchaseItems/"+ids,"delete",{},true,function(data){
+				  request.ajax("[[@{/}]]/deliveryItems/"+ids,"delete",{},true,function(data){
 					  if(data.success){
 						  $table.bootstrapTable('refresh');
 					  }else{
@@ -102,12 +102,12 @@
 				  });
 			  }else if("edit"==ope){
 				  //界面跳转
-				  window.location.href="[[@{/}]]/purchaseItems/"+idArray[0]+"/edit";
+				  window.location.href="[[@{/}]]/deliveryItems/"+idArray[0]+"/edit";
 			  }
 		  });
 
-		  var queryUrl = '[[@{/}]]purchaseItems';
-		  $table = $('#purchaseItem_table').bootstrapTable({
+		  var queryUrl = '[[@{/}]]deliveryItems';
+		  $table = $('#deliveryItem_table').bootstrapTable({
 			  url: queryUrl,                      //请求后台的URL（*）
 			  method: 'GET',                      //请求方式（*）
 			  toolbar: '#toolbar',                //工具按钮用哪个容器
@@ -135,34 +135,31 @@
 				  return temp;
 			  },
 
-               columns: [{
-                   checkbox: true,
-                   visible: true                  //是否显示复选框
-               },{
-                   field: 'purchaseNum',
-                   title: '编号'
-               },{
-                   field: 'name',
-                   title: '名称'
-               },{
-                   field: 'materialId',
-                   title: '材料'
-               },{
-                   field: 'totalPrice',
-                   title: '总价'
-               },{
-                   field: 'totalCount',
-                   title: '总数'
-               },{
-                 field: 'leftCount',
-                 title: '待送货'
-               },{
-                   field: 'endDate',
-                   title: '出货日期'
-               },{
-                   field: 'status',
-                   title: '状态'
-               }],
+        columns: [{
+            checkbox: true,  
+            visible: true                  //是否显示复选框  
+        },{
+            field: 'totalPrice',
+            title: '总金额'
+        },{
+            field: 'totalCount',
+            title: '总数量'
+        },{
+            field: 'leftCount',
+            title: '未入库数量'
+        },{
+            field: 'price',
+            title: '单价'
+        },{
+            field: 'name',
+            title: '材料名'
+        },{
+            field: 'deliveryNum',
+            title: '送货单'
+        },{
+            field: 'status',
+            title: '状态'
+        }],
            
 			  onLoadError: function () {
 				  //加载失败触发

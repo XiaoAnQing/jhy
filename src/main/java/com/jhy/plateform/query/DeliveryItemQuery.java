@@ -1,8 +1,6 @@
 package com.jhy.plateform.query;
 import com.jhy.plateform.query.base.BaseQuery;
-public class PurchaseQuery extends BaseQuery{
-
-	private Byte status;
+public class DeliveryItemQuery extends BaseQuery{
 
 	@Override
 	public String getOrder() {
@@ -11,13 +9,5 @@ public class PurchaseQuery extends BaseQuery{
 
 	@Override
 	public void addQuery(String condition, Object... param) {
-	}
-
-	public Byte getStatus() {
-		return status;
-	}
-
-	public void setStatus(Byte status) {
-		this.status = status;
 	}
 }

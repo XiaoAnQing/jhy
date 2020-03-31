@@ -1,7 +1,12 @@
 package com.jhy.plateform.domain;
+
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
   * 
   * @ClassName: Product
@@ -41,6 +46,9 @@ public class Product extends BaseDomain {
     private Integer customerId;                                    
      //跟单
     private Integer userId;
+
+    //附件
+    private List<Attach> attachs = new ArrayList<Attach>();
 
     public String getName() {
         return name;
@@ -152,5 +160,13 @@ public class Product extends BaseDomain {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public List<Attach> getAttachs() {
+        return attachs;
+    }
+
+    public void setAttachs(List<Attach> attachs) {
+        this.attachs = attachs;
     }
 }

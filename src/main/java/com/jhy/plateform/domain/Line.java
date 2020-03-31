@@ -2,6 +2,9 @@ package com.jhy.plateform.domain;
 import com.jhy.plateform.anno.ClassInfoAnno;
 import com.jhy.plateform.domain.base.BaseDomain;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
   * 
   * @ClassName: Line
@@ -18,6 +21,8 @@ public class Line extends BaseDomain {
      //编号
     private Integer num;
 
+    private List<LineItem> lineItems = new ArrayList<LineItem>();
+
     public String getName() {
         return name;
     }
@@ -32,5 +37,13 @@ public class Line extends BaseDomain {
 
     public void setNum(Integer num) {
         this.num = num;
+    }
+
+    public List<LineItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = lineItems;
     }
 }

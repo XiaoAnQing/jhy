@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jhy.plateform.dao.LineMapper">
+<mapper namespace="com.jhy.plateform.dao.DeliveryMapper">
 
-  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Line" >
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Delivery" >
       <id column="id" property="id"/>
-      <result column="name" property="name"/>
       <result column="num" property="num"/>
+      <result column="price" property="price"/>
+      <result column="purchaseNum" property="purchaseNum"/>
+      <result column="createDate" property="createDate"/>
+      <result column="userName" property="userName"/>
+      <result column="userId" property="userId"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
       id,
-      name,
-      num
+      num,
+      price,
+      purchaseNum,
+      createDate,
+      userName,
+      userId
   </sql>
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from line where id = #{id}
+      select <include refid="Base_Column_List" /> from delivery where id = #{id}
   </select>
-
-  <!--根据Id查询-->
-  <select id="findSummary" resultMap="BaseResultMap" parameterType="com.jhy.plateform.domain.Line" >
-      //todo
-  </select>
+  
+  
   <!-- 多条件查询 -->
-  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.LineQuery">
-      select <include refid="Base_Column_List" /> from line
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.DeliveryQuery">
+      select <include refid="Base_Column_List" /> from delivery
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
             and name like #{likeKeyWords}
-         </if>
-         <if test="name != null and name != ''">
-            and name = #{name}
          </if>
       </trim>
       order by id DESC
@@ -41,44 +43,37 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from line where id = #{id}
+      delete from delivery where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
   <delete id="deleteByIds" parameterType="java.lang.String">
-      delete from line where id in
+      delete from delivery where id in
       <foreach item="id" collection="array" open="(" separator="," close=")">
           #{id}
       </foreach>
   </delete>
   
   <!--部分字段允许为空-->
-  <insert id="add" parameterType="com.jhy.plateform.domain.Line" >
-    insert into line
+  <insert id="add" parameterType="com.jhy.plateform.domain.Delivery" >
+    insert into delivery
     <trim prefix="(" suffix=")" suffixOverrides="," >
         id,
-        name,
-        num
+        num,
+        price,
+        purchaseNum,
+        createDate,
+        userName,
+        userId,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
         #{id},
-        #{name},
-        #{num}
+        #{num},
+        #{price},
+        #{purchaseNum},
+        #{createDate},
+        #{userName},
+        #{userId}
     </trim>
   </insert>
-  
-  <!--更新--> 
-  <update id="update" parameterType="com.jhy.plateform.domain.Line" >
-      update line
-      <set>
-          <if test="name != null and name != ''" >
-              name = #{name},
-          </if>
-          <if test="num != null" >
-              num = #{num}
-          </if>
-      </set>
-      where id = #{id}
-  </update>
-	
 </mapper>

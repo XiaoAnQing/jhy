@@ -1,51 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jhy.plateform.dao.PurchaseItemMapper">
+<mapper namespace="com.jhy.plateform.dao.DeliveryItemMapper">
 
-  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.PurchaseItem" >
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.DeliveryItem" >
       <id column="id" property="id"/>
-      <result column="purchaseNum" property="purchaseNum"/>
-      <result column="name" property="name"/>
-      <result column="materialId" property="materialId"/>
-      <result column="price" property="price"/>
       <result column="totalPrice" property="totalPrice"/>
       <result column="totalCount" property="totalCount"/>
       <result column="leftCount" property="leftCount"/>
-      <result column="endDate" property="endDate"/>
+      <result column="price" property="price"/>
+      <result column="name" property="name"/>
+      <result column="materialId" property="materialId"/>
+      <result column="deliveryNum" property="deliveryNum"/>
       <result column="status" property="status"/>
-      <result column="remark" property="remark"/>
   </resultMap>
   
   <sql id="Base_Column_List" >
       id,
-      purchaseNum,
-      name,
-      materialId,
-      price,
       totalPrice,
       totalCount,
       leftCount,
-      endDate,
-      status,
-      remark
+      price,
+      name,
+      materialId,
+      deliveryNum,
+      status
   </sql>
   
   <!--根据Id查询-->
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-      select <include refid="Base_Column_List" /> from purchaseItem where id = #{id}
+      select <include refid="Base_Column_List" /> from deliveryItem where id = #{id}
   </select>
   
   
   <!-- 多条件查询 -->
-  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.PurchaseItemQuery">
-      select <include refid="Base_Column_List" /> from purchaseItem
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.DeliveryItemQuery">
+      select <include refid="Base_Column_List" /> from deliveryItem
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
             and name like #{likeKeyWords}
-         </if>
-         <if test="purchaseNum != null and purchaseNum != ''">
-            and purchaseNum = #{purchaseNum}
          </if>
       </trim>
       order by id DESC
@@ -54,58 +47,48 @@
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
-      delete from purchaseItem where id = #{id}
+      delete from deliveryItem where id = #{id}
   </delete>
   
   <!-- 批量删除 -->
   <delete id="deleteByIds" parameterType="java.lang.String">
-      delete from purchaseItem where id in
+      delete from deliveryItem where id in
       <foreach item="id" collection="array" open="(" separator="," close=")">
           #{id}
       </foreach>
   </delete>
   
   <!--部分字段允许为空-->
-  <insert id="add" parameterType="com.jhy.plateform.domain.PurchaseItem" >
-    insert into purchaseItem
+  <insert id="add" parameterType="com.jhy.plateform.domain.DeliveryItem" >
+    insert into deliveryItem
     <trim prefix="(" suffix=")" suffixOverrides="," >
         id,
-        purchaseNum,
-        name,
-        materialId,
-        price,
         totalPrice,
         totalCount,
         leftCount,
+        price,
+        name,
+        materialId,
+        deliveryNum,
+        status
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
         #{id},
-        #{purchaseNum},
-        #{name},
-        #{materialId},
-        #{price},
         #{totalPrice},
         #{totalCount},
         #{leftCount},
+        #{price},
+        #{name},
+        #{materialId},
+        #{deliveryNum},
+        #{status}
     </trim>
   </insert>
   
   <!--更新--> 
-  <update id="update" parameterType="com.jhy.plateform.domain.PurchaseItem" >
-      update purchaseItem
+  <update id="update" parameterType="com.jhy.plateform.domain.DeliveryItem" >
+      update deliveryItem
       <set>
-          <if test="purchaseNum != null and purchaseNum != ''" >
-              purchaseNum = #{purchaseNum},
-          </if>
-          <if test="name != null and name != ''" >
-              name = #{name},
-          </if>
-          <if test="materialId != null" >
-              materialId = #{materialId},
-          </if>
-          <if test="price != null" >
-              price = #{price},
-          </if>
           <if test="totalPrice != null" >
               totalPrice = #{totalPrice},
           </if>
@@ -115,14 +98,20 @@
           <if test="leftCount != null" >
               leftCount = #{leftCount},
           </if>
-          <if test="endDate != null" >
-              endDate = #{endDate},
+          <if test="price != null" >
+              price = #{price},
+          </if>
+          <if test="name != null and name != ''" >
+              name = #{name},
+          </if>
+          <if test="materialId != null" >
+              materialId = #{materialId},
+          </if>
+          <if test="deliveryNum != null and deliveryNum != ''" >
+              deliveryNum = #{deliveryNum},
           </if>
           <if test="status != null" >
-              status = #{status},
-          </if>
-          <if test="remark != null and remark != ''" >
-              remark = #{remark}
+              status = #{status}
           </if>
       </set>
       where id = #{id}

@@ -50,6 +50,9 @@
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
             and name like #{likeKeyWords}
          </if>
+         <if test="status != null and status != ''">
+            and status = #{status}
+         </if>
       </trim>
       order by id DESC
   </select>

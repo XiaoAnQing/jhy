@@ -31,7 +31,7 @@
 			<div class="box">
 				<div class="box-header with-border">
 					<h3 class="box-title">
-						<button type="button" id="save_glasses_btn" class="btn btn-block btn-success btn-flat">保存</button>
+						<button type="button"  th:data-product="${productId}" id="save_btn" class="btn btn-block btn-success btn-flat">保存</button>
 					</h3>
 
 					<div class="box-tools pull-right">
@@ -83,6 +83,26 @@
 <script type="text/javascript">
 	$(function(){
 		var $container = $("#container");
+
+		//加载现有的附件
+		request.ajax(request.contextPath+"/products/"+$("#save_btn").data("product")+"/attachs","get","",true,function(data){
+			if(data.success){
+				data = data.data
+				$.each(data,function(index,item){
+					var $img = $("<img/>")
+					$img.data("name",item.name);
+					$img.data("id",item.materialId);
+					$img.data("price",item.price);
+					$img.css("position","absolute");
+					var x = item.x;
+					var y = item.y;
+					$img.css({ left: x, top: y });
+					$container.append($img);
+				})
+			}
+		})
+
+
 		//开始位置
 		var _x,_y;
 		var draging=false;
@@ -97,14 +117,15 @@
 
 		//阻止某元素组织右键点击事件
 		$("#container").bind("contextmenu", function(){
+			alert("sdfsfsdf")
 			return false;
 		})
 
 		$("#widget").on("click","img",function(){
 
 			//点击了之后应该在右边出现对应的图标
-			var $tempImg = $("<img/>");
-			$tempImg.attr("src",$(this).attr("src"));
+			var $tempImg = $(this).clone();
+			//$tempImg.attr("src",$(this).attr("src"));
 			$tempImg.css("position","absolute");
 
 			//处理拖动事件
@@ -150,9 +171,11 @@
 			$container.append($tempImg);
 		});
 
-		$("#save_glasses_btn").on("click",function(){
+		$("#save_btn").on("click",function(){
 			//获取每个部件的信息，并且提示结构信息
-			var paramInfos = [];
+			var productId = $(this).data("product");
+
+			var paramInfos = "";
 			var widgetInfos =  $container.find("img");
 			$.each(widgetInfos,function(index,item){
 				//type
@@ -162,15 +185,23 @@
 				//x
 				//y
 				item = $(item);<!--左边零件-->
-				var paramInfo={};
-				paramInfo.x = item.position().left;
-				paramInfo.y = item.position().top;
-				paramInfos[index] = paramInfo;
+
+				var name = item.data("name");
+				var materialId = item.data("id");
+				var price = item.data("price");
+				var img = item.data("img");
+				var x = item.position().left;
+				var y = item.position().top;
+				paramInfos=paramInfos+"attachs["+index+"].name="+name+"&attachs["+index+"].materialId="+materialId+"&attachs["+index+"].price="+price+"&attachs["+index+"].img="+img+"&attachs["+index+"].x="+x+"&attachs["+index+"].y="+y+"&";
 			});
-
-			//异步提交
-
-			//弹出提示
+			//异步提交{id}/attach
+			request.ajax(request.contextPath+"/products/"+productId+"/attach","PUT",paramInfos,true,function (data) {
+				if(data.success){
+					alert(data.msg);
+				}else{
+					alert(data.msg);
+				}
+			})
 		});
 
 		var queryUrl = '[[@{/}]]materials';
@@ -211,7 +242,7 @@
 				field: 'detailImg',
 				title: '图片',
 				formatter:function(value,row,index){
-					return "<img width='21px' height='21px' src='"+request.imgServer+value+"'/>";
+					return "<img width='21px' height='21px' data-price='"+row.price+"' data-img='"+row.img+"' data-name='"+row.name+"' data-id='"+row.id+"' src='"+request.imgServer+value+"'/>";
 				}
 			}],
 			onLoadError: function () {

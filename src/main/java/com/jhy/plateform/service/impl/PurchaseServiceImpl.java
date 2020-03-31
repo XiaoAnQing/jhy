@@ -49,6 +49,7 @@ public class PurchaseServiceImpl extends BaseServiceImpl<Purchase, PurchaseQuery
 
 		for(PurchaseItem purchaseItem : purchaseItems) {
 			purchaseItem.setPurchaseNum(purchase.getNum());
+			purchaseItem.setLeftCount(purchaseItem.getTotalCount());
 			Material material = materialService.findById(purchaseItem.getMaterialId()+"");
 			purchaseItem.setName(material.getName());
 			purchaseItem.setPrice(material.getPrice());

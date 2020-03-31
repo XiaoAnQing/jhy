@@ -162,5 +162,18 @@
       </set>
       where id = #{id}
   </update>
-	
+
+  <!--解除绑定-->
+  <delete id="unbind" parameterType="int">
+      delete from attach where productId = #{productId}
+  </delete>
+
+  <!--绑定-->
+  <insert id="bind" parameterType="com.jhy.plateform.domain.Attach">
+      insert into attach (name,materialId, productId,price,img,x,y) values(#{name}, #{materialId}, #{productId},#{price},#{img},#{x}, #{y})
+  </insert>
+
+  <select id="findAttach" resultType="com.jhy.plateform.domain.Attach">
+      select * from attach where productId = #{productId}
+  </select>
 </mapper>
