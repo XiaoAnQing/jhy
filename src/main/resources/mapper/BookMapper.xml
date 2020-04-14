@@ -145,5 +145,9 @@
       </set>
       where id = #{id}
   </update>
+
+    <select id="count" parameterType="com.jhy.plateform.domain.BookCount" resultType="int">
+        select count(1) from book where month(createDate)=#{month}  and year(createDate) = #{year}
+    </select>
 	
 </mapper>
