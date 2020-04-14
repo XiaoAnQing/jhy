@@ -22,8 +22,16 @@
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
       select <include refid="Base_Column_List" /> from station where id = #{id}
   </select>
-  
-  
+
+  <!-- 多条件查询 -->
+  <select id="findTaskCountBySelective" resultType="com.jhy.plateform.dto.StationTaskCount" parameterType="com.jhy.plateform.query.StationQuery">
+      select s.*,(select count(*) from task t where s.id = t.stationId) taskCount  from station s
+      <trim prefix="where" prefixOverrides="and |or ">
+
+      </trim>
+      order by id DESC
+  </select>
+
   <!-- 多条件查询 -->
   <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.StationQuery">
       select <include refid="Base_Column_List" /> from station
@@ -35,7 +43,7 @@
       </trim>
       order by id DESC
   </select>
-  
+
   
   <!-- 删除 -->
   <delete id="deleteById" parameterType="java.lang.String" >
