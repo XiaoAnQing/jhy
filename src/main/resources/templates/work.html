@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="~{common/head::common-head}"/>
+
+  <body class="hold-transition skin-blue fixed sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+		<header th:replace="~{common/top::common-top}"/>
+
+		<aside th:replace="~{common/left::common-left}"/>
+
+
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>
+				Fixed Layout
+				<small>Blank example to the fixed layout</small>
+			</h1>
+			<ol class="breadcrumb">
+				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+				<li><a href="#">Layout</a></li>
+				<li class="active">Fixed</li>
+			</ol>
+		</section>
+
+
+		<section class="content">
+			<div class="row" id="zone_station">
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box box-info">
+						<div class="box-header with-border">
+							<h3 class="box-title">最近任务</h3>
+							<div class="box-tools pull-right">
+								<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+								</button>
+								<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+							</div>
+						</div>
+
+						<div class="box-body">
+							<div class="info-box bg-yellow">
+								<span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
+
+								<div class="info-box-content">
+									<span class="info-box-text">Inventory</span>
+									<span class="info-box-number">5,200</span>
+
+									<div class="progress">
+										<div class="progress-bar" style="width: 50%"></div>
+									</div>
+									<span class="progress-description">
+                    50% Increase in 30 Days
+                  </span>
+								</div>
+								<!-- /.info-box-content -->
+							</div>
+
+						</div>
+
+
+
+
+						<!-- /.box-footer -->
+					</div>
+
+
+			    </div>
+			</div>
+			<!-- /.row -->
+		</section>
+	</div>
+	<!-- /.content-wrapper -->
+
+		<footer th:replace="~{common/footer::common-footer}"/>
+
+		<aside th:replace="~{common/setting::common-setting}"/>
+</div>
+<!-- ./wrapper -->
+  <script type="text/javascript">
+	  $(function(){
+	  	//绘制当前登录用户的工作台面
+	  	request.ajax(request.contextPath+"/users/stations/",'get','',true,function(data){
+	  		if(data.success){
+	  			var $zone = $("#zone_station")
+	  			$.each(data.data,function(index,item){
+	  				$('<div class="col-lg-3 col-xs-6">' +
+						'<div class="small-box bg-aqua">' +
+							'<div class="inner">' +
+								'<h3>任务数'+item.taskCount+'</h3>' +
+							    '<p>'+item.name+'</p>' +
+							'</div>' +
+							'<div class="icon">' +
+							    '<i class="ion ion-bag"></i>' +
+							'</div>' +
+							'<a href="#" class="small-box-footer">详情<i class="fa fa-arrow-circle-right"></i></a>' +
+						'</div>' +
+					'</div>').appendTo($zone);
+				})
+			}
+		});
+	  });
+  </script>
+</body>
+</html>

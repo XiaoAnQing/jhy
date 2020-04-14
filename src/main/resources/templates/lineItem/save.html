@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-  <head th:replace="~{common/head::common-head}"/>
+<head>
+  <div th:replace="~{common/head::common-head}"/>
+  <script th:src="@{/static/bower_components/table/bootstrap-table.js}"></script>
+  <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
+  <script th:src="@{/static/dist/js/request.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+  <title>添加LineItem</title>
+</head>
+
   
   <body class="hold-transition skin-blue fixed sidebar-mini">
     <div class="wrapper">
@@ -68,7 +76,7 @@
                       <div class="form-group">
                         <label for="input" class="col-sm-2 control-label">原材料</label>
                         <div class="col-sm-10">
-                          <textarea class="form-control select2" th:value="*{input}"   rows="2" cols="10" id="input" name="input" data-bv-notempty="true"></textarea>
+                          <textarea class="form-control select2" th:text="*{input}" rows="2" cols="10" id="input" name="input" data-bv-notempty="true"></textarea>
                         </div>
                       </div>
                     </div>
@@ -123,6 +131,7 @@
     
     <script type="text/javascript">
         $(function(){
+          var $materialTable;
             $("form[id='lineItem']").bootstrapValidator({
           	  feedbackIcons: {
           		  valid: 'glyphicon glyphicon-ok',
@@ -180,11 +189,107 @@
               }
             }
           });
+
+          $("textarea[name=input]").on("click",function(){
+            $("#modal_material").modal('show');
+          });
+
+          //监听
+          $("#btn_batch_purchase").on("click",function(){
+            //获取table选中的
+            var materials = $materialTable.bootstrapTable('getAllSelections');
+            //关闭模态对话框
+            $("#modal_material").modal('hide');
+            if(materials.length==0){
+              return;
+            }
+            var inputObj = [];
+            $.each(materials,function(index,item){
+              inputObj.push({"id":item.id,"name":item.name,"count":1});
+            });
+            $("#input").val(JSON.stringify(inputObj));
+          });
+
+          //modal_material显示会触发该事件
+          $('#modal_material').on('show.bs.modal', function (e) {
+
+            //第一次的时候才需要加载名称信息
+            if($materialTable==null){
+              var queryUrl = '[[@{/}]]/materials';
+              $materialTable = $('#material_table').bootstrapTable({
+                url: queryUrl,            //请求后台的URL（*）
+                method: 'GET',            //请求方式（*）
+                toolbar: '#materialToolbar',        //工具按钮用哪个容器
+                striped: true,            //是否显示行间隔色
+                cache: false,             //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,           //是否显示分页（*）
+                sortable: true,           //是否启用排序
+                sortOrder: "asc",           //排序方式
+
+                sidePagination: "server",       //分页方式：client供应商端分页，server服务端分页（*）
+
+                pageNumber: 1,            //初始化加载第一页，默认第一页,并记录
+                pageSize: 10,             //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],    //可供选择的每页的行数（*）
+
+                clickToSelect: true,        //是否启用点击选中行
+                uniqueId: "id",           //每一行的唯一标识，一般为主键列
+
+                //得到查询的参数
+                queryParams : function (params) {
+                  var temp = {
+                    pageNum: (params.offset / params.limit) + 1,   //页码
+                    pageSize: params.limit             //每页显示多条
+                  };
+                  return temp;
+                },
+                columns: [{
+                  checkbox: true,
+                  visible: true          //是否显示复选框
+                },{
+                  field: 'name',
+                  title: '名称'
+                },{
+                  field: 'num',
+                  title: '编号'
+                },{
+                  field: 'material',
+                  title: '材料'
+                },{
+                  field: 'technology',
+                  title: '工艺'
+                },{
+                  field: 'oriPrice',
+                  title: '原价'
+                },{
+                  field: 'price',
+                  title: '现价'
+                },{
+                  field: 'size',
+                  title: '尺寸'
+                },{
+                  field: 'unit',
+                  title: '单位'
+                },{
+                  field: 'unitWeight',
+                  title: '单位重量'
+                },{
+                  field: 'detailImg',
+                  title: '图片'
+                }],
+                responseHandler: function (res) {
+                  return {
+                    "total": res.total,//总页数
+                    "rows": res.data   //数据
+                  };
+                }
+              });
+            }else{
+              $materialTable.bootstrapTable('refresh');
+            }
+          });
         });
     </script>
-
-
-
   </body>
 </html>
  
