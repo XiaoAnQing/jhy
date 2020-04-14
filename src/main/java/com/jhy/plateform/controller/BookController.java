@@ -3,6 +3,7 @@ package com.jhy.plateform.controller;
 import com.github.pagehelper.PageInfo;
 import com.jhy.plateform.anno.ControllerAnno;
 import com.jhy.plateform.domain.Book;
+import com.jhy.plateform.domain.BookCount;
 import com.jhy.plateform.domain.User;
 import com.jhy.plateform.exception.KPException;
 import com.jhy.plateform.query.BookQuery;
@@ -22,8 +23,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/books")
@@ -127,5 +128,51 @@ public class BookController{
 			jsonModel.setMsg("删除订单失败,请重新刷新数据再删除");
 		}
 		return jsonModel;
+	}
+
+	/**
+	 * 订单总量查询
+	 */
+	@ResponseBody
+	@RequestMapping("bookCount")
+	public  JsonModel bookCount (){
+		JsonModel jsonModel = new JsonModel();
+		BookCount bookCount = new BookCount();
+		int [] counts = new int[12];
+		String [] months = new String[12];
+
+		Date date = new Date();
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year= c.get(Calendar.YEAR);
+
+		int month = c.get(Calendar.MONTH);;
+
+		bookCount.setMonth(month);
+		bookCount.setYear(year);
+
+		for(int i=0;i<12;i++){
+			int count = bookService.count(bookCount);
+			counts[12-i-1] = count;
+			months[12-i-1] = month-- + "月";
+
+			if(month==0){
+				month=12;
+				year--;
+				bookCount.setYear(year);
+			}
+
+			bookCount.setMonth(month);
+		}
+
+		bookCount.setCounts(counts);
+		bookCount.setMonths(months);
+
+		System.out.println(Arrays.toString(counts));
+		System.out.println(Arrays.toString(months));
+
+		jsonModel.setData(bookCount);
+		return  jsonModel;
 	}
 }

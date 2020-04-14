@@ -43,6 +43,10 @@ public class IndexController {
 		//身份
 		//Object activeUser =  subject.getPrincipal();
 		//model.addAttribute("user", activeUser);
+
+
+
+
 		return "index";
 	}
 

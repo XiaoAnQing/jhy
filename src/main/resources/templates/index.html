@@ -93,39 +93,41 @@
 					<div class="box">
 						<div class="box-header with-border">
 							<h3 class="box-title">生产路线</h3>
-							<div class="box-tools pull-right">
-								<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-								</button>
-								<div class="btn-group">
-									<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-										<i class="fa fa-wrench"></i></button>
-									<ul class="dropdown-menu" role="menu">
-										<li><a href="#">Action</a></li>
-										<li><a href="#">Another action</a></li>
-										<li><a href="#">Something else here</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Separated link</a></li>
-									</ul>
-								</div>
-								<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-							</div>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="row">
 								<div class="col-md-12">
 									<!--绘制路线-->
-									<div id="container" th:style="'position: relative;height: 400px;background:url(' + @{/static/img/grid.png} + ');'">
+									<div id="xx" th:style="'position: relative;height: 400px;background:url(' + @{/static/img/grid.png} + ');'">
 
 									</div>
 								</div>
 							</div>
-							<!-- /.row -->
 						</div>
 					</div>
-					<!-- /.box -->
 				</div>
-				<!-- /.col -->
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box">
+						<div class="box-header with-border">
+							<h3 class="box-title">生产路线</h3>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<div class="row">
+								<div class="col-md-12">
+									<!--绘制路线-->
+									<div id="container" th:style="'position: relative;height: 400px;'">
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<!-- /.row -->
 		</section>
@@ -140,10 +142,69 @@
   <script type="text/javascript">
 	  $(function(){
 
-	  	request.ajax(request.contextPath+"/lines/suammry/",'get','',true,function(data){
+		  request.ajax(request.contextPath+"/lines/suammry/",'get','',true,function(data){
 
-		});
+		  })
 	  });
+
+		//异步数据加载echars
+	  var myChart = echarts.init(document.getElementById('container'));
+	  myChart.setOption({
+		  title: {
+			  text: '12个月订单量'
+		  },
+		  tooltip: {},
+		  legend: {
+			  data:['销量']
+		  },
+		  xAxis: {
+			  data: []
+		  },
+		  yAxis: {},
+		  series: [{
+			  name: '销量',
+			  type: 'bar',
+			  data: []
+		  }]
+	  });
+
+	  // 异步加载数据
+	  $.get('books/bookCount').done(function (data) {
+	  	console.log(data.data.months);
+		  // 填入数据
+		  myChart.setOption({
+			  xAxis: {
+				  data: data.data.months
+			  },
+			  series: [{
+				  // 根据名字对应到相应的系列
+				  name: '订单总量',
+				  data: data.data.counts
+			  }]
+		  });
+	  });
+
+	  /*var option = {
+		  title: {
+			  text: 'ECharts 入门示例'
+		  },
+		  tooltip: {},
+		  legend: {
+			  data:['销量']
+		  },
+		  xAxis: {
+			  data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+		  },
+		  yAxis: {},
+		  series: [{
+			  name: '销量',
+			  type: 'line',
+			  data: [5, 20, 36, 10, 10, 20]
+		  }]
+	  };
+
+	  // 使用刚指定的配置项和数据显示图表。
+	  myChart.setOption(option);*/
   </script>
 </body>
 </html>

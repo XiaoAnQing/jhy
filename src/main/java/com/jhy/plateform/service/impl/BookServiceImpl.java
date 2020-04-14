@@ -2,6 +2,7 @@ package com.jhy.plateform.service.impl;
 
 import com.jhy.plateform.dao.BookMapper;
 import com.jhy.plateform.domain.Book;
+import com.jhy.plateform.domain.BookCount;
 import com.jhy.plateform.domain.BookItem;
 import com.jhy.plateform.domain.Product;
 import com.jhy.plateform.exception.KPException;
@@ -32,6 +33,9 @@ public class BookServiceImpl extends BaseServiceImpl<Book, BookQuery> implements
 	ProductService productService;
 	@Autowired
 	BookItemService bookItemService;
+
+	@Autowired
+	BookMapper bookMapper;
 
 	@Override
 	public int add(Book book) {
@@ -92,4 +96,8 @@ public class BookServiceImpl extends BaseServiceImpl<Book, BookQuery> implements
 		return daoMapper.deleteByIds(ids);
 	}
 
+	@Override
+	public int count(BookCount bookCount) {
+		return bookMapper.count(bookCount);
+	}
 }
