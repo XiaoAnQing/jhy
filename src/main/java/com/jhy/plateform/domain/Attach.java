@@ -26,8 +26,7 @@ public class Attach extends BaseDomain {
     //图片
     private String img;
 
-    private Integer x;
-    private Integer y;
+    private String position;
 
     public String getName() {
         return name;
@@ -61,22 +60,6 @@ public class Attach extends BaseDomain {
         this.price = price;
     }
 
-    public Integer getX() {
-        return x;
-    }
-
-    public void setX(Integer x) {
-        this.x = x;
-    }
-
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
-
     public String getImg() {
         return img;
     }
@@ -91,5 +74,13 @@ public class Attach extends BaseDomain {
 
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

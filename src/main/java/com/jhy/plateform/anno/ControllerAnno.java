@@ -15,8 +15,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ControllerAnno {
-	String listUI();                      //列表页面地址
-	String addUI();                       //添加页面地址
-	String editUI();                      //编辑页面地址
-	String detailUI();                    //详情页面地址
+	String listUI() default "";                      //列表页面地址
+	String addUI()  default "";                       //添加页面地址
+	String editUI()  default "";                      //编辑页面地址
+	String detailUI()  default "";                    //详情页面地址
 }

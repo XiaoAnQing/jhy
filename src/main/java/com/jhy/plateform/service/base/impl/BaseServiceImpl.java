@@ -9,6 +9,7 @@ import com.jhy.plateform.exception.KPException;
 import com.jhy.plateform.query.base.BaseQuery;
 import com.jhy.plateform.service.base.BaseService;
 import org.apache.ibatis.type.JdbcType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @param <T>
  * @param <E>
  */
+@Transactional
 public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> {
     protected BaseDao<T,E> daoMapper;
     
@@ -43,6 +45,7 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
      * @return  
      */
 	@Override
+	@Transactional(readOnly = true)
 	public int check(Map<String, Object> param) {
 		return daoMapper.check(param);
 	}
@@ -55,6 +58,7 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
 	 * @return  
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public int count(Map<String, Object> param) {
 		return daoMapper.count(param);
 	}
@@ -65,6 +69,7 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
 	 * @return
 	 */
     @Override
+	@Transactional(readOnly = true)
     public T findById(String id) {
     	return (T) daoMapper.findById(id);
     }
@@ -73,6 +78,7 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
      * 根据Id集合查询
      */
     @Override
+	@Transactional(readOnly = true)
 	public List<T> findByIds(String... ids) {
 		return daoMapper.findByIds(ids);
 	}
@@ -84,7 +90,8 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
 	 * @return
 	 */
 	@Override
-    public PageInfo<T> findBySelective(E e){
+	@Transactional(readOnly = true)
+	public PageInfo<T> findBySelective(E e){
     	if(e.isPagination()){
     		PageHelper.startPage(e.getPageStart(),e.getPageSize());
     		Page<T> list = (Page<T>)this.daoMapper.findBySelective(e);
@@ -148,6 +155,7 @@ public class BaseServiceImpl<T,E extends BaseQuery> implements BaseService<T,E> 
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<T> findAll() {
 		return daoMapper.findBySelective(null);
 	}

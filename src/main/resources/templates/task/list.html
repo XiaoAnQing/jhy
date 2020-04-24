@@ -11,7 +11,7 @@
 
       <div class="content-wrapper">
         <section class="content-header">
-          <h1>送货明细管理<small>查询\添加\修改</small>
+          <h1>任务管理<small>查询\添加\修改</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -50,11 +50,11 @@
                   </div>
 
                   <div id="toolbar">
-                    <a th:href="@{/deliveryItems/new}" type="button" class="btn bg-maroon btn-flat">添加</a>
+                    <a th:href="@{/tasks/new}" type="button" class="btn bg-maroon btn-flat">添加</a>
                     <button type="button" data-ope="delete" class="btn bg-olive btn-flat">删除</button>
                     <button type="button" data-ope="edit" class="btn bg-orange btn-flat">编辑</button>
                   </div>
-                  <table id="deliveryItem_table"></table>
+                  <table id="task_table"></table>
                 </div>
               </div>
             </div>
@@ -75,9 +75,6 @@
   <script type="text/javascript">
 	  $(function (){
 		  var $table;
-
-
-
 		  $("#searchForm").on("submit",function(e){
 			  var param = $(this).serializeObject();
 			  $table.bootstrapTable('refresh',{query:param});
@@ -96,7 +93,7 @@
 			  var ope = $(this).data("ope");
 			  if("delete"==ope){
 				  var ids = idArray.join(",");
-				  request.ajax("[[@{/}]]/deliveryItems/"+ids,"delete",{},true,function(data){
+				  request.ajax("[[@{/}]]/tasks/"+ids,"delete",{},true,function(data){
 					  if(data.success){
 						  $table.bootstrapTable('refresh');
 					  }else{
@@ -105,12 +102,12 @@
 				  });
 			  }else if("edit"==ope){
 				  //界面跳转
-				  window.location.href="[[@{/}]]/deliveryItems/"+idArray[0]+"/edit";
+				  window.location.href="[[@{/}]]/tasks/"+idArray[0]+"/edit";
 			  }
 		  });
 
-		  var queryUrl = '[[@{/}]]deliveryItems';
-		  $table = $('#deliveryItem_table').bootstrapTable({
+		  var queryUrl = '[[@{/}]]tasks';
+		  $table = $('#task_table').bootstrapTable({
 			  url: queryUrl,                      //请求后台的URL（*）
 			  method: 'GET',                      //请求方式（*）
 			  toolbar: '#toolbar',                //工具按钮用哪个容器
@@ -137,35 +134,51 @@
 				  };
 				  return temp;
 			  },
-              columns: [{
-                  checkbox: true,
-                  visible: true                  //是否显示复选框
-              },{
-                  field: 'totalPrice',
-                  title: '总金额'
-              },{
-                  field: 'totalCount',
-                  title: '总数量'
-              },{
-                  field: 'leftCount',
-                  title: '未入库数量'
-              },{
-                  field: 'price',
-                  title: '单价'
-              },{
-                  field: 'name',
-                  title: '材料名'
-              },{
-                  field: 'deliveryNum',
-                  title: '送货单'
-              },{
-                  field: 'status',
-                  title: '状态'
-              },{
-                field: 'xx',
-                title: '操作',
-                formatter:opeFormatter
-              }],
+
+        columns: [{
+            checkbox: true,  
+            visible: true                  //是否显示复选框  
+        },{
+            field: 'name',
+            title: '任务名'
+        },{
+            field: 'taskCount',
+            title: '任务数量'
+        },{
+            field: 'leftCount',
+            title: '剩余数量'
+        },{
+            field: 'status',
+            title: '任务状态'
+        },{
+            field: 'passRate',
+            title: '合格率'
+        },{
+            field: 'stationName',
+            title: '工作台'
+        },{
+            field: 'stationId',
+            title: '工作台'
+        },{
+            field: 'bookNum',
+            title: '订单编号'
+        },{
+            field: 'startDate',
+            title: '开始日期'
+        },{
+            field: 'dateline',
+            title: '截止日期'
+        },{
+            field: 'level',
+            title: '优先级'
+        },{
+            field: 'input',
+            title: '原材料'
+        },{
+            field: 'extraCount',
+            title: '额外补充'
+        }],
+           
 			  onLoadError: function () {
 				  //加载失败触发
 			  },
@@ -176,20 +189,6 @@
 				  };
 			  }
 		  });
-
-        $table.on("click","button",function(){
-          var $it = $(this);
-          var id = $it.data("id");
-          //弹出框
-          alert("sdfsf");
-        })
 	  });
-
-      function opeFormatter (value,row,index) {
-        if(row.leftCount==0){
-          return "--";
-        }
-        return '<button type="button" data-id="'+row.id+'" class="btn bg-olive btn-flat btn-xs">入库</button>'
-      }
   </script>
 </html>

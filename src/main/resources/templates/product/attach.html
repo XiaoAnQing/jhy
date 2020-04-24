@@ -89,15 +89,22 @@
 			if(data.success){
 				data = data.data
 				$.each(data,function(index,item){
-					var $img = $("<img/>")
-					$img.data("name",item.name);
-					$img.data("id",item.materialId);
-					$img.data("price",item.price);
-					$img.css("position","absolute");
-					var x = item.x;
-					var y = item.y;
-					$img.css({ left: x, top: y });
-					$container.append($img);
+
+					item.position = JSON.parse(item.position);
+					$.each(item.position,function(index,position){
+						var $img = $("<img/>")
+						$img.data("name",item.name);
+						$img.data("id",item.materialId);
+						$img.data("price",item.price);
+						$img.css("position","absolute");
+						$img.css("left",position.x);
+						$img.css("top",position.y);
+						$img.attr("src",item.img);
+						var x = item.x;
+						var y = item.y;
+						$img.css({ left: x, top: y });
+						$container.append($img);
+					});
 				})
 			}
 		})
@@ -117,7 +124,6 @@
 
 		//阻止某元素组织右键点击事件
 		$("#container").bind("contextmenu", function(){
-			alert("sdfsfsdf")
 			return false;
 		})
 
@@ -127,56 +133,57 @@
 			var $tempImg = $(this).clone();
 			//$tempImg.attr("src",$(this).attr("src"));
 			$tempImg.css("position","absolute");
-
-			//处理拖动事件
-			$tempImg.on("mousedown",function(e){
-
-				if (3 == e.which) {
-					//生成一个div外壳
-					return;
-				}
-
-				//开始移动
-				draging = true;
-				e = e || window.event;
-				$it  = $(this);
-				//pageX:事件触发时事件源在整个页面的X轴位置
-				//pageY:事件触发时事件源在整个页面的Y轴位置
-
-				_x = e.pageX - $it.position().left;
-
-				_y = e.pageY - $it.position().top;
-
-				return false;
-			});
-
-			$(document).on("mousemove",function(e){
-				if (!draging) {
-					return false;
-				}
-				e = e || window.event;
-				var x = e.pageX - _x;
-				var y = e.pageY - _y;
-				var maxL = $container.width()- $it.outerWidth(true);
-				var maxT = $container.height() - $it.outerHeight(true);
-				x = x < 0 ? paddingLeft : x;
-				x = x > maxL ? maxL : x;
-				y = y < 0 ? 0 : y;
-				y = y > maxT ? maxT : y;
-				$it.css({ left: x, top: y });
-			}).on("mouseup",function(e){
-				draging = false;
-				return false;
-			});
 			$container.append($tempImg);
+		});
+
+		//处理拖动事件
+		$("#container").on("mousedown","img",function(e){
+
+			if (3 == e.which) {
+				//生成一个div外壳
+				return;
+			}
+
+			//开始移动
+			draging = true;
+			e = e || window.event;
+			$it  = $(this);
+			//pageX:事件触发时事件源在整个页面的X轴位置
+			//pageY:事件触发时事件源在整个页面的Y轴位置
+
+			_x = e.pageX - $it.position().left;
+
+			_y = e.pageY - $it.position().top;
+
+			return false;
+		});
+
+		$(document).on("mousemove",function(e){
+			if (!draging) {
+				return false;
+			}
+			e = e || window.event;
+			var x = e.pageX - _x;
+			var y = e.pageY - _y;
+			var maxL = $container.width()- $it.outerWidth(true);
+			var maxT = $container.height() - $it.outerHeight(true);
+			x = x < 0 ? paddingLeft : x;
+			x = x > maxL ? maxL : x;
+			y = y < 0 ? 0 : y;
+			y = y > maxT ? maxT : y;
+			$it.css({ left: x, top: y });
+		}).on("mouseup",function(e){
+			draging = false;
+			return false;
 		});
 
 		$("#save_btn").on("click",function(){
 			//获取每个部件的信息，并且提示结构信息
 			var productId = $(this).data("product");
 
-			var paramInfos = "";
+			var paramInfos = [];
 			var widgetInfos =  $container.find("img");
+
 			$.each(widgetInfos,function(index,item){
 				//type
 				//item
@@ -185,17 +192,59 @@
 				//x
 				//y
 				item = $(item);<!--左边零件-->
-
-				var name = item.data("name");
 				var materialId = item.data("id");
-				var price = item.data("price");
-				var img = item.data("img");
 				var x = item.position().left;
 				var y = item.position().top;
-				paramInfos=paramInfos+"attachs["+index+"].name="+name+"&attachs["+index+"].materialId="+materialId+"&attachs["+index+"].price="+price+"&attachs["+index+"].img="+img+"&attachs["+index+"].x="+x+"&attachs["+index+"].y="+y+"&";
+
+				if(paramInfos.length==0){
+					var paramInfo = {};
+					paramInfo.materialId=materialId;
+					paramInfo.name=item.data("name");
+					paramInfo.price=item.data("price");
+					paramInfo.img=item.data("img");
+					paramInfo.totalCount=1;
+					paramInfo.position=[{"x":x,"y":y}];
+					paramInfos.push(paramInfo);
+				}else{
+					var length = paramInfos.length;
+					for(var index=0;index<length;index++){
+						var paramInfo = paramInfos[index];
+						if(paramInfo.materialId==materialId){
+							paramInfo.position.push({"x":x,"y":y});
+							paramInfo.totalCount=paramInfo.totalCount+1;
+						}else{
+							//创建参数对象
+							var name = item.data("name");
+
+							var price = item.data("price");
+							var img = item.data("img");
+
+							var paramInfo = {};
+							paramInfo.materialId=materialId;
+							paramInfo.name=name;
+							paramInfo.price=price;
+							paramInfo.img=img;
+							paramInfo.totalCount=1;
+							paramInfo.position=[{"x":x,"y":y}];
+							paramInfos.push(paramInfo);
+						}
+					}
+				}
 			});
+
+			var length = paramInfos.length;
+			var param="";
+			for(var index=0;index<length;index++){
+				var name=paramInfos[index].name;
+				var materialId=paramInfos[index].materialId;
+				var price=paramInfos[index].price;
+				var img=paramInfos[index].img;
+				var position=JSON.stringify(paramInfos[index].position);
+				var totalCount=paramInfos[index].totalCount;
+				param=param+"attachs["+index+"].name="+name+"&attachs["+index+"].materialId="+materialId+"&attachs["+index+"].price="+price+"&attachs["+index+"].img="+img+"&attachs["+index+"].position="+position+"&attachs["+index+"].totalCount="+totalCount+"&";
+			}
 			//异步提交{id}/attach
-			request.ajax(request.contextPath+"/products/"+productId+"/attach","PUT",paramInfos,true,function (data) {
+			request.ajax(request.contextPath+"/products/"+productId+"/attach","PUT",param,true,function (data) {
 				if(data.success){
 					alert(data.msg);
 				}else{
