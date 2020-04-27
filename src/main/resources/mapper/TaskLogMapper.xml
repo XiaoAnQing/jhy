@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.TaskLogMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.TaskLog" >
+      <id column="id" property="id" />
+      <result column="totalCount" property="totalCount" />
+      <result column="goodCount" property="goodCount" />
+      <result column="badCount" property="badCount" />
+      <result column="userName" property="userName"/>
+      <result column="userId" property="userId" />
+      <result column="taskId" property="taskId" />
+      <result column="ceateDate" property="ceateDate"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      totalCount,
+      goodCount,
+      badCount,
+      userName,
+      userId,
+      taskId,
+      ceateDate
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from task_log where id = #{id}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.TaskLogQuery">
+      select <include refid="Base_Column_List" /> from task_log
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from task_log where id = #{id}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from task_log where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.TaskLog" >
+    insert into task_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        totalCount,
+        goodCount,
+        badCount,
+        userName,
+        userId,
+        taskId,
+        ceateDate
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{totalCount},
+        #{goodCount},
+        #{badCount},
+        #{userName},
+        #{userId},
+        #{taskId},
+        #{ceateDate}
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.TaskLog" >
+      update task_log
+      <set>
+          <if test="totalCount != null" >
+              totalCount = #{totalCount},
+          </if>
+          <if test="goodCount != null" >
+              goodCount = #{goodCount},
+          </if>
+          <if test="badCount != null" >
+              badCount = #{badCount},
+          </if>
+          <if test="userName != null and userName != ''" >
+              userName = #{userName},
+          </if>
+          <if test="userId != null" >
+              userId = #{userId},
+          </if>
+          <if test="taskId != null" >
+              taskId = #{taskId},
+          </if>
+          <if test="ceateDate != null" >
+              ceateDate = #{ceateDate}
+          </if>
+      </set>
+      where id = #{id}
+  </update>
+	
+</mapper>

@@ -47,6 +47,9 @@
          <if test="purchaseNum != null and purchaseNum != ''">
             and purchaseNum = #{purchaseNum}
          </if>
+         <if test="materialId != null and materialId != ''">
+            and materialId = #{materialId}
+         </if>
       </trim>
       order by id DESC
   </select>

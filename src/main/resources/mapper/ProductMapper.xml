@@ -170,7 +170,7 @@
 
   <!--绑定-->
   <insert id="bind" parameterType="com.jhy.plateform.domain.Attach">
-      insert into attach (name,materialId, productId,price,img,x,y) values(#{name}, #{materialId}, #{productId},#{price},#{img},#{x}, #{y})
+      insert into attach (name,materialId, productId,price,img,position,totalCount) values(#{name}, #{materialId}, #{productId},#{price},#{img},#{position},#{totalCount})
   </insert>
 
   <select id="findAttach" resultType="com.jhy.plateform.domain.Attach">

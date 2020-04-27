@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="~{common/head::common-head}"/>
+  
+  <body class="hold-transition skin-blue fixed sidebar-mini">
+    <div class="wrapper">
+      <header th:replace="~{common/top::common-top}"/>
+    
+      <aside th:replace="~{common/left::common-left}"/>
+    
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h1 th:text="${#strings.isEmpty(id) ? '添加任务日志':'编辑任务日志'}"></h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>系统管理</a></li>
+            <li><a href="#">任务日志管理</a></li>
+            <li class="active">列表</li>
+          </ol>
+        </section>
+        
+        <!-- Main content -->
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- right column -->
+            <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                <!-- form start -->
+                <form class="form-horizontal" th:action="@{/taskLogs/}+${#strings.isEmpty(taskLog.id)?'':taskLog.id}" th:method="post" th:object="${taskLog}">
+                  <input type="hidden" name="id" th:value="*{id}">
+                  <input type="hidden" name="_method" th:value="*{#strings.isEmpty(id) ? 'POST':'PUT'}">
+    
+                  <div class="box-body">   
+                  
+      
+     
+                  </div>
+                  <div class="box-footer">
+                    <button type="reset" class="btn btn-default btn-flat">重 置</button>
+                    <button type="submit" class="btn btn-success btn-flat" th:text="${#strings.isEmpty(id) ? '添加':'编辑'}"></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer th:replace="~{common/footer::common-footer}"/>
+    
+      <aside th:replace="~{common/setting::common-setting}"/>
+    </div>
+    
+    <script type="text/javascript">
+        $(function(){
+            $("form[id='taskLog']").bootstrapValidator({
+          	  feedbackIcons: {
+          		  valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                }
+            }); 
+        });
+    </script>
+  </body>
+</html>
+ 
+ 

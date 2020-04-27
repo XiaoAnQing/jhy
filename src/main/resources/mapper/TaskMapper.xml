@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhy.plateform.dao.TaskMapper">
+
+  <resultMap id="BaseResultMap" type="com.jhy.plateform.domain.Task" >
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="taskCount" property="taskCount"/>
+      <result column="leftCount" property="leftCount"/>
+      <result column="status" property="status"/>
+      <result column="passRate" property="passRate" />
+      <result column="stationName" property="stationName"/>
+      <result column="stationId" property="stationId"/>
+      <result column="bookNum" property="bookNum"/>
+      <result column="startDate" property="startDate"/>
+      <result column="dateline" property="dateline"/>
+      <result column="level" property="level"/>
+      <result column="input" property="input"/>
+      <result column="extraCount" property="extraCount"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      id,
+      name,
+      taskCount,
+      leftCount,
+      status,
+      passRate,
+      stationName,
+      stationId,
+      bookNum,
+      startDate,
+      dateline,
+      level,
+      input,
+      extraCount
+  </sql>
+  
+  <!--根据Id查询-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select <include refid="Base_Column_List" /> from task where id = #{id}
+  </select>
+  
+  
+  <!-- 多条件查询 -->
+  <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.TaskQuery">
+      select <include refid="Base_Column_List" /> from task
+      <trim prefix="where" prefixOverrides="and |or ">
+         <if test="keyWords != null and keyWords != ''">
+            <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
+            and name like #{likeKeyWords}
+         </if>
+      </trim>
+      order by id DESC
+  </select>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteById" parameterType="java.lang.String" >
+      delete from task where id = #{id}
+  </delete>
+  
+  <!-- 批量删除 -->
+  <delete id="deleteByIds" parameterType="java.lang.String">
+      delete from task where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+  </delete>
+  
+  <!--部分字段允许为空-->
+  <insert id="add" parameterType="com.jhy.plateform.domain.Task" >
+    insert into task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        name,
+        taskCount,
+        leftCount,
+        status,
+        passRate,
+        stationName,
+        stationId,
+        bookNum,
+        <if test="startDate != null" >
+            startDate,
+        </if>
+        dateline,
+        <if test="level != null" >
+            level,
+        </if>
+        <if test="input != null and input != ''" >
+            input,
+        </if>
+        <if test="extraCount != null" >
+            extraCount
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{name},
+        #{taskCount},
+        #{leftCount},
+        #{status},
+        #{passRate},
+        #{stationName},
+        #{stationId},
+        #{bookNum},
+        <if test="startDate != null" >
+            #{startDate},
+        </if>
+        #{dateline},
+        <if test="level != null" >
+            #{level},
+        </if>
+        <if test="input != null and input != ''" >
+            #{input},
+        </if>
+        <if test="extraCount != null" >
+            #{extraCount}
+        </if>
+    </trim>
+  </insert>
+  
+  <!--更新--> 
+  <update id="update" parameterType="com.jhy.plateform.domain.Task" >
+      update task
+      <set>
+          <if test="name != null and name != ''" >
+              name = #{name},
+          </if>
+          <if test="taskCount != null" >
+              taskCount = #{taskCount},
+          </if>
+          <if test="leftCount != null" >
+              leftCount = #{leftCount},
+          </if>
+          <if test="status != null" >
+              status = #{status},
+          </if>
+          <if test="passRate != null" >
+              passRate = #{passRate},
+          </if>
+          <if test="stationName != null and stationName != ''" >
+              stationName = #{stationName},
+          </if>
+          <if test="stationId != null" >
+              stationId = #{stationId},
+          </if>
+          <if test="bookNum != null and bookNum != ''" >
+              bookNum = #{bookNum},
+          </if>
+          <if test="startDate != null" >
+              startDate = #{startDate},
+          </if>
+          <if test="dateline != null" >
+              dateline = #{dateline},
+          </if>
+          <if test="level != null" >
+              level = #{level},
+          </if>
+          <if test="input != null and input != ''" >
+              input = #{input},
+          </if>
+          <if test="extraCount != null" >
+              extraCount = #{extraCount}
+          </if>
+      </set>
+      where id = #{id}
+  </update>
+	
+</mapper>
