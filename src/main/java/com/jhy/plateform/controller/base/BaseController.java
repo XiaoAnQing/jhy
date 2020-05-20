@@ -182,6 +182,7 @@ public abstract class BaseController <T extends BaseDomain,E extends BaseQuery> 
 	 */
 	@RequestMapping(value="/",method = { RequestMethod.POST })
 	public String add(@Validated T t, Errors errors,ModelMap modelMap) throws KPException {
+		//校验
 		if(errors.hasErrors()){
 			//modelMap.addAttribute("errr")
 			List<FieldError> fieldErrors = errors.getFieldErrors();

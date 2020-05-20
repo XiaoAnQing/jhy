@@ -36,7 +36,7 @@
       <trim prefix="where" prefixOverrides="and |or ">
          <if test="keyWords != null and keyWords != ''">
             <bind name="likeKeyWords" value="'%' + _parameter.keyWords + '%'" />
-            and name like #{likeKeyWords}
+            and bookNum like #{likeKeyWords}
          </if>
       </trim>
       order by id DESC

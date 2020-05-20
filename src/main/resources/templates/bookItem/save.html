@@ -7,11 +7,6 @@
     <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
     <script th:src="@{/static/dist/js/request.js}"></script>
     <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
-
-    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-    <script th:src="@{/static/dist/js/moment-with-locales.min.js}"></script>
-    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-
     <style type="text/css">
       #order_item_table_body .form-group{
         margin-right: 0px;
@@ -64,11 +59,8 @@
 
                       <div class="form-group">
                         <label for="endDate" class="col-sm-2 control-label">交货日期</label>
-                        <div class='input-group date' id='datetimepicker1'>
+                        <div class="col-sm-10">
                           <input type="text" id="endDate" name="endDate" th:value="*{endDate}"  class="form-control" placeholder="交货日期" data-bv-notempty="true"/>
-                          <span class="input-group-addon">
-                              <span class="glyphicon glyphicon-calendar"></span>
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -442,12 +434,6 @@
           $(item).find("input[name=totalCount]").attr("name","bookItems["+index+"].totalCount");
         });
         return true;
-      });
-
-      //日期插件
-      $('#datetimepicker1').datetimepicker({
-        format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn')
       });
     });
   </script>

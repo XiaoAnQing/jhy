@@ -5,6 +5,7 @@ import com.jhy.plateform.domain.User;
 import com.jhy.plateform.exception.KPException;
 import com.jhy.plateform.service.UserService;
 import com.jhy.plateform.utils.ConstantUtil;
+import com.jhy.plateform.utils.ExcelUtil;
 import com.jhy.plateform.utils.JsonModel;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -43,8 +44,6 @@ public class IndexController {
 		//身份
 		//Object activeUser =  subject.getPrincipal();
 		//model.addAttribute("user", activeUser);
-
-
 
 
 		return "index";

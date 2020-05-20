@@ -30,9 +30,14 @@
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
       select <include refid="Base_Column_List" /> from store where id = #{id}
   </select>
-  
-  
-  <!-- 多条件查询 -->
+
+  <!--根据materialId查询-->
+  <select id="findByMaterialId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+      select <include refid="Base_Column_List" /> from store where materialId = #{materialId}
+  </select>
+
+
+    <!-- 多条件查询 -->
   <select id="findBySelective" resultMap="BaseResultMap" parameterType="com.jhy.plateform.query.StoreQuery">
       select <include refid="Base_Column_List" /> from store
       <trim prefix="where" prefixOverrides="and |or ">

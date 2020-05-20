@@ -1,6 +1,8 @@
 package com.jhy.plateform.controller;
 
+import com.jhy.plateform.domain.DeliveryItem;
 import com.jhy.plateform.exception.ExceptionKind;
+import com.jhy.plateform.service.DeliveryItemService;
 import com.jhy.plateform.utils.JsonModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,6 +24,12 @@ public class StoreController extends BaseController<Store,StoreQuery>{
 	public void setStoreService(StoreService storeService) {
 		this.baseService = storeService;
 	}
+
+	@Autowired
+    StoreService storeService;
+
+	@Autowired
+	DeliveryItemService deliveryItemService;
 
 	@Override
 	public Store beforeSave(ModelMap modelMap, Store t) throws KPException {
@@ -64,4 +72,31 @@ public class StoreController extends BaseController<Store,StoreQuery>{
 		jsonModel.setMsg(result?"绑定成功":"绑定失败");
 		return jsonModel;
 	}
+
+	@RequestMapping(value = "/insertStroe",method = RequestMethod.GET)
+	@ResponseBody
+	public JsonModel insertStore(String [] id,String [] materialCount,Integer deliveryItemId){
+		JsonModel jsonModel = new JsonModel();
+
+	    Store store = new Store();
+		int result = 0;
+		for(int i=0;i<id.length;i++){
+			if(Integer.parseInt(materialCount[i])!=0){
+				int temp = Integer.parseInt(materialCount[i]);
+				//仓库增加
+				store.setId(Integer.parseInt(id[i]));
+				store.setMaterialCount(storeService.findById(id[i]).getMaterialCount()+temp);
+				result = storeService.updateById(store);
+
+				//为入库材料删减
+				DeliveryItem deliveryItem = deliveryItemService.findById(deliveryItemId+"");
+				deliveryItem.setLeftCount(deliveryItem.getLeftCount()-temp);
+				deliveryItemService.updateById(deliveryItem);
+			}
+		}
+		jsonModel.setSuccess(result==1?true:false);
+		jsonModel.setMsg(result==1?"入库成功":"入库失败");
+		return  jsonModel;
+	}
+
 }

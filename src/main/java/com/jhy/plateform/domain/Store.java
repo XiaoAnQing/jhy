@@ -95,4 +95,18 @@ public class Store extends BaseDomain {
     public void setStoreTypeId(Integer storeTypeId) {
         this.storeTypeId = storeTypeId;
     }
+
+    @Override
+    public String toString() {
+        return "Store{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", materialCount=" + materialCount +
+                ", materialId=" + materialId +
+                ", materialName='" + materialName + '\'' +
+                ", status=" + status +
+                ", storeTypeId=" + storeTypeId +
+                '}';
+    }
 }

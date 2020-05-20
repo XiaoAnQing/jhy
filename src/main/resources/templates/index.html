@@ -113,14 +113,14 @@
 				<div class="col-md-12">
 					<div class="box">
 						<div class="box-header with-border">
-							<h3 class="box-title">生产路线</h3>
+							<h3 class="box-title">订单报表</h3>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="row">
 								<div class="col-md-12">
 									<!--绘制路线-->
-									<div id="container" th:style="'position: relative;height: 400px;'">
+									<div id="book" th:style="'position: relative;height: 400px;'">
 
 									</div>
 								</div>
@@ -130,6 +130,27 @@
 				</div>
 			</div>
 			<!-- /.row -->
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box">
+						<div class="box-header with-border">
+							<h3 class="box-title">订单报表</h3>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<div class="row">
+								<div class="col-md-12">
+									<!--绘制路线-->
+									<div id="product" th:style="'position: relative;height: 400px;'">
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
 	</div>
 	<!-- /.content-wrapper -->
@@ -147,8 +168,8 @@
 		  })
 	  });
 
-		//异步数据加载echars
-	  var myChart = echarts.init(document.getElementById('container'));
+	  //订单总量异步数据加载echars
+	  var myChart = echarts.init(document.getElementById('book'));
 	  myChart.setOption({
 		  title: {
 			  text: '12个月订单量'
@@ -170,7 +191,6 @@
 
 	  // 异步加载数据
 	  $.get('books/bookCount').done(function (data) {
-	  	console.log(data.data.months);
 		  // 填入数据
 		  myChart.setOption({
 			  xAxis: {
@@ -184,27 +204,44 @@
 		  });
 	  });
 
-	  /*var option = {
+
+	  //产品异步数据加载echars
+	  var myChart = echarts.init(document.getElementById('product'));
+	  myChart.setOption({
 		  title: {
-			  text: 'ECharts 入门示例'
+			  text: '12个月订单量'
 		  },
 		  tooltip: {},
 		  legend: {
 			  data:['销量']
 		  },
 		  xAxis: {
-			  data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+			  data: []
 		  },
 		  yAxis: {},
 		  series: [{
 			  name: '销量',
-			  type: 'line',
-			  data: [5, 20, 36, 10, 10, 20]
+			  type: 'bar',
+			  data: []
 		  }]
-	  };
+	  });
 
-	  // 使用刚指定的配置项和数据显示图表。
-	  myChart.setOption(option);*/
+	  // 异步加载数据
+	  $.get('products/productCount').done(function (data) {
+		  console.log(data.data.months);
+		  // 填入数据
+		  myChart.setOption({
+			  xAxis: {
+				  data: data.data.months
+			  },
+			  series: [{
+				  // 根据名字对应到相应的系列
+				  name: '订单总量',
+				  data: data.data.counts
+			  }]
+		  });
+	  });
+
   </script>
 </body>
 </html>

@@ -68,14 +68,64 @@
       <script th:src="@{/static/bower_components/table/bootstrap-table-zh-CN.js}"></script>
       <script th:src="@{/static/dist/js/request.js}"></script>
       <link rel="stylesheet" th:href="@{/static/bower_components/table/bootstrap-table.css}">
+      <link rel="stylesheet" th:href="@{/static/dist/css/add.css}">
     </div>
+
+    <!-- 入库弹出框 -->
+    <div class="modal fade" id="modal-icon" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="label"></h4>
+          </div>
+          <div class="modal-body">
+            <div class="row" >
+              <div class="col-xs-12">
+                <input type="text" id="keyWords" class="form-control" placeholder="关键字" >
+              </div>
+            </div>
+            <div class="row"  id="container_icon" style="padding-top: 10px;">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+            <button id="sure-select-btn" type="button" class="btn btn-primary">确 定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="modal-alert" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">提示</h4>
+          </div>
+          <div class="modal-body">
+            <p>入库总数大于未入库数量&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" id="tips">确认</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
   </body>
 
   <!-- page script -->
   <script type="text/javascript">
-	  $(function (){
+	  window.onload=function(){
 		  var $table;
+          var scount=0;
+          //定义入库模态框
+          var $iconModal = $('#modal-icon');
 
+          //定义提示模态框
+          var $alertModal = $('#modal-alert');
 
 
 		  $("#searchForm").on("submit",function(e){
@@ -177,19 +227,100 @@
 			  }
 		  });
 
+
+        var tempId;
         $table.on("click","button",function(){
           var $it = $(this);
+          scount = $(this).parent().parent().children().eq(3).html();
+          // console.log($it.data("leftCount"));
           var id = $it.data("id");
-          //弹出框
-          alert("sdfsf");
-        })
-	  });
+          tempId = id;
 
-      function opeFormatter (value,row,index) {
-        if(row.leftCount==0){
-          return "--";
+          request.ajax("[[@{/}]]deliveryItems/store/"+id,"get",{},true,function(data){
+            if(data.success){
+              var $containerIcon = $iconModal.find("#container_icon");
+              $containerIcon.empty();
+              $.each(data.data,function(index,item){
+                $('<div class="col-xs-6 col-md-3">'+
+                        '<a href="#" class="thumbnail" data-storeid="'+item.id+'">'+
+                        '<img  class="img-circle" src="'+request.imgServer+item.path+'" data-img="'+item.path+'"  style="width: 140px; height: 140px;">'+
+                        '</a><ul class="btn-numbox">\n' +
+                        '            <li>\n' +
+                        '                <ul class="count">\n' +
+                        '                    <li><span id="num-jian" class="num-jian">-</span></li>\n' +
+                        '                    <li><input type="text" class="input-num" id="input-num" value="0" /></li>\n' +
+                        '                    <li><span id="num-jia" class="num-jia">+</span></li>\n' +
+                        '                </ul>\n' +
+                        '            </li>\n' +
+                        '　　　  </ul></div>').appendTo($containerIcon);
+              });
+
+
+
+              //实现点击增减
+              $(".num-jia").click(function(){
+                var num = parseInt($(this).parent().prev().children().attr("value"))+1;
+                $(this).parent().prev().children().attr("value",num);
+                $(this).parent().prev().children().val(num);
+              });
+              $(".num-jian").click(function(){
+                var num = parseInt($(this).parent().next().children().attr("value"));
+                if(num>0){
+                  $(this).parent().next().children().attr("value",--num);
+                  $(this).parent().next().children().val(num);
+                }
+              });
+            }
+          });
+
+          //弹出框
+          $iconModal.modal('show');
+        })
+
+
+        //弹出框点击确认
+        $("#sure-select-btn").click(function(){
+          var sum=0;
+          $(".input-num").each(function(index,e){
+            $(".input-num").eq(index).attr("value",$(".input-num").eq(index).val());
+            sum +=parseInt($(".input-num").eq(index).attr("value"));
+          });
+          if(scount<sum){
+            $alertModal.modal('show');
+          }else{
+            //TODO
+            // xxx.data("storeid")
+            var data;
+            $(".thumbnail").each(function(index,item){
+              item = $(item);
+              data = "id="+item.data("storeid") +"&"+ "materialCount=" + item.closest("div").find("input[id='input-num']").val()+"&"+data;
+              /*console.log(item.data("storeid"));
+              console.log(item.closest("div").find("input[id='input-num']").val());*/
+            });
+            data+= "&deliveryItemId="+tempId;
+            console.log(data);
+            request.ajax("[[@{/}]]stores/insertStroe?"+data,"get",{},true,function(data){
+              if(data.success){
+                $table.bootstrapTable('refresh');
+                $iconModal.modal('hide');
+              }else{
+                alert(data.msg);
+              }
+            });
+          }
+        })
+
+
+        $("#tips").click(function(){
+          $alertModal.modal('hide');
+        });
+
+        function opeFormatter (value,row,index) {
+          if(row.leftCount==0){
+            return "--";
+          }
+          return '<button type="button" data-id="'+row.id+'" class="btn bg-olive btn-flat btn-xs">入库</button>'
         }
-        return '<button type="button" data-id="'+row.id+'" class="btn bg-olive btn-flat btn-xs">入库</button>'
-      }
+  };
   </script>
 </html>

@@ -85,4 +85,17 @@ public class DeliveryItem extends BaseDomain {
     public void setDeliveryNum(String deliveryNum) {
         this.deliveryNum = deliveryNum;
     }
+
+    @Override
+    public String toString() {
+        return "DeliveryItem{" +
+                "totalPrice=" + totalPrice +
+                ", totalCount=" + totalCount +
+                ", leftCount=" + leftCount +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", materialId=" + materialId +
+                ", deliveryNum='" + deliveryNum + '\'' +
+                '}';
+    }
 }

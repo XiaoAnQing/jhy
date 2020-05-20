@@ -12,11 +12,16 @@ import com.jhy.plateform.service.StoreService;
 import com.jhy.plateform.service.base.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Service
 public class StoreServiceImpl extends BaseServiceImpl<Store, StoreQuery> implements StoreService{
 
 	@Autowired
 	MaterialService materialService;
+
+	@Autowired
+	StoreMapper storeMapper;
 
 	@Autowired
 	public void setStoreMapper(StoreMapper storeMapper){
@@ -38,8 +43,13 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, StoreQuery> impleme
 		store.setId(storeId);
 		store.setMaterialId(materialId);
 		store.setMaterialName(material.getName());
-		store.setMaterialCount(1);
+		store.setMaterialCount(0);
 
 		return updateById(store)==1;
+	}
+
+	@Override
+	public List<Store> findByMaterialId(Integer materialId) {
+		return storeMapper.findByMaterialId(materialId);
 	}
 }

@@ -1,21 +1,22 @@
 package com.jhy.plateform.controller;
 
-import com.jhy.plateform.domain.Station;
-import com.jhy.plateform.dto.StationTaskCount;
-import com.jhy.plateform.query.StationQuery;
-import com.jhy.plateform.service.StationService;
-import com.jhy.plateform.utils.ConstantUtil;
-import com.jhy.plateform.utils.JsonModel;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.jhy.plateform.anno.ControllerAnno;
 import com.jhy.plateform.controller.base.BaseController;
 import com.jhy.plateform.domain.User;
+import com.jhy.plateform.dto.StationTaskCount;
 import com.jhy.plateform.exception.KPException;
+import com.jhy.plateform.query.StationQuery;
 import com.jhy.plateform.query.UserQuery;
+import com.jhy.plateform.service.StationService;
 import com.jhy.plateform.service.UserService;
+import com.jhy.plateform.utils.ConstantUtil;
+import com.jhy.plateform.utils.JsonModel;
+import com.jhy.plateform.utils.MD5Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -63,5 +64,19 @@ public class UserController extends BaseController<User,UserQuery>{
 		jsonModel.setSuccess(true);
 		jsonModel.setMsg("查找工序成功");
 		return jsonModel;
+	}
+
+
+	@Override
+	public String add(User user, Errors errors, ModelMap modelMap) throws KPException {
+		user.setPassword(MD5Util.digest(user.getPassword()));
+		return super.add(user, errors, modelMap);
+	}
+
+
+	@Override
+	public String edit(String id, ModelMap modelMap, User user) throws KPException {
+		user.setPassword(MD5Util.digest(user.getPassword()));
+		return super.edit(id, modelMap, user);
 	}
 }
